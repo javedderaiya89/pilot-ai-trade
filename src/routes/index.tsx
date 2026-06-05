@@ -139,7 +139,7 @@ function Dashboard() {
         </div>
       </GlassCard>
 
-      <Stat /* placeholder removed via JSX no-op */ label="" value="" />
+      
     </AppShell>
   );
 }
