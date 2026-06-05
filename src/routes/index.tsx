@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
-import { GlassCard, PageHeader, Pill, SectionTitle, Stat } from "@/components/ui-bits";
+import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
 import { indices, topGainers, topLosers, mostActive, sentiment, equityCurve, inr, news } from "@/lib/mock-data";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ArrowDown, ArrowUp, Flame, Activity, Newspaper } from "lucide-react";
