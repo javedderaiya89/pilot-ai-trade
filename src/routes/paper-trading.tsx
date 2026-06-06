@@ -3,7 +3,7 @@ import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
 import { positions, closedPositions, inr, equityCurve } from "@/lib/mock-data";
 import {
-  Area, AreaChart, Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine,
+  Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine,
 } from "recharts";
 import { Wallet, Calculator, TrendingUp, TrendingDown, Target, ShieldAlert, Settings2, X } from "lucide-react";
 import { useMemo, useState } from "react";
