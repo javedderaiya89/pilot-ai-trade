@@ -377,7 +377,7 @@ function PnlChart({ title, subtitle, total, data, xKey }: { title: string; subti
             <ReferenceLine y={0} stroke="var(--border)" />
             <Bar dataKey="pnl" radius={[4, 4, 0, 0]}>
               {data.map((d, i) => (
-                <PnlCell key={i} value={d.pnl as number} />
+                <Cell key={i} fill={(d.pnl as number) >= 0 ? "var(--bull)" : "var(--bear)"} />
               ))}
             </Bar>
           </BarChart>
@@ -385,13 +385,6 @@ function PnlChart({ title, subtitle, total, data, xKey }: { title: string; subti
       </div>
     </GlassCard>
   );
-}
-
-function PnlCell({ value }: { value: number }) {
-  // recharts Cell substitute via inline rect color
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const Cell: any = require("recharts").Cell;
-  return <Cell fill={value >= 0 ? "var(--bull)" : "var(--bear)"} />;
 }
 
 function fmtPnl(n: number) {
