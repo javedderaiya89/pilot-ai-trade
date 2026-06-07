@@ -6,8 +6,9 @@ import {
   Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine,
 } from "recharts";
 import { Wallet, Calculator, TrendingUp, TrendingDown, Target, ShieldAlert, Settings2, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/paper-trading")({
   head: () => ({ meta: [{ title: "Paper Trading — TradePilot AI" }] }),
