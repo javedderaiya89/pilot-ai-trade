@@ -9,109 +9,109 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignalsRouteImport } from './routes/signals'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ScannerRouteImport } from './routes/scanner'
-import { Route as RiskRouteImport } from './routes/risk'
-import { Route as PortfolioRouteImport } from './routes/portfolio'
-import { Route as PaperTradingRouteImport } from './routes/paper-trading'
-import { Route as OptionsRouteImport } from './routes/options'
-import { Route as NewsRouteImport } from './routes/news'
-import { Route as JournalRouteImport } from './routes/journal'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedSignalsRouteImport } from './routes/_authenticated/signals'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
+import { Route as AuthenticatedRiskRouteImport } from './routes/_authenticated/risk'
+import { Route as AuthenticatedPortfolioRouteImport } from './routes/_authenticated/portfolio'
+import { Route as AuthenticatedPaperTradingRouteImport } from './routes/_authenticated/paper-trading'
+import { Route as AuthenticatedOptionsRouteImport } from './routes/_authenticated/options'
+import { Route as AuthenticatedNewsRouteImport } from './routes/_authenticated/news'
+import { Route as AuthenticatedJournalRouteImport } from './routes/_authenticated/journal'
 
-const SignalsRoute = SignalsRouteImport.update({
-  id: '/signals',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSignalsRoute = AuthenticatedSignalsRouteImport.update({
+  id: '/_authenticated/signals',
   path: '/signals',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/_authenticated/settings',
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ScannerRoute = ScannerRouteImport.update({
-  id: '/scanner',
+const AuthenticatedScannerRoute = AuthenticatedScannerRouteImport.update({
+  id: '/_authenticated/scanner',
   path: '/scanner',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RiskRoute = RiskRouteImport.update({
-  id: '/risk',
+const AuthenticatedRiskRoute = AuthenticatedRiskRouteImport.update({
+  id: '/_authenticated/risk',
   path: '/risk',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PortfolioRoute = PortfolioRouteImport.update({
-  id: '/portfolio',
+const AuthenticatedPortfolioRoute = AuthenticatedPortfolioRouteImport.update({
+  id: '/_authenticated/portfolio',
   path: '/portfolio',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PaperTradingRoute = PaperTradingRouteImport.update({
-  id: '/paper-trading',
-  path: '/paper-trading',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OptionsRoute = OptionsRouteImport.update({
-  id: '/options',
+const AuthenticatedPaperTradingRoute =
+  AuthenticatedPaperTradingRouteImport.update({
+    id: '/_authenticated/paper-trading',
+    path: '/paper-trading',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedOptionsRoute = AuthenticatedOptionsRouteImport.update({
+  id: '/_authenticated/options',
   path: '/options',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
+const AuthenticatedNewsRoute = AuthenticatedNewsRouteImport.update({
+  id: '/_authenticated/news',
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
-const JournalRoute = JournalRouteImport.update({
-  id: '/journal',
+const AuthenticatedJournalRoute = AuthenticatedJournalRouteImport.update({
+  id: '/_authenticated/journal',
   path: '/journal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/journal': typeof JournalRoute
-  '/news': typeof NewsRoute
-  '/options': typeof OptionsRoute
-  '/paper-trading': typeof PaperTradingRoute
-  '/portfolio': typeof PortfolioRoute
-  '/risk': typeof RiskRoute
-  '/scanner': typeof ScannerRoute
-  '/settings': typeof SettingsRoute
-  '/signals': typeof SignalsRoute
+  '/journal': typeof AuthenticatedJournalRoute
+  '/news': typeof AuthenticatedNewsRoute
+  '/options': typeof AuthenticatedOptionsRoute
+  '/paper-trading': typeof AuthenticatedPaperTradingRoute
+  '/portfolio': typeof AuthenticatedPortfolioRoute
+  '/risk': typeof AuthenticatedRiskRoute
+  '/scanner': typeof AuthenticatedScannerRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/signals': typeof AuthenticatedSignalsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/journal': typeof JournalRoute
-  '/news': typeof NewsRoute
-  '/options': typeof OptionsRoute
-  '/paper-trading': typeof PaperTradingRoute
-  '/portfolio': typeof PortfolioRoute
-  '/risk': typeof RiskRoute
-  '/scanner': typeof ScannerRoute
-  '/settings': typeof SettingsRoute
-  '/signals': typeof SignalsRoute
+  '/journal': typeof AuthenticatedJournalRoute
+  '/news': typeof AuthenticatedNewsRoute
+  '/options': typeof AuthenticatedOptionsRoute
+  '/paper-trading': typeof AuthenticatedPaperTradingRoute
+  '/portfolio': typeof AuthenticatedPortfolioRoute
+  '/risk': typeof AuthenticatedRiskRoute
+  '/scanner': typeof AuthenticatedScannerRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/signals': typeof AuthenticatedSignalsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/journal': typeof JournalRoute
-  '/news': typeof NewsRoute
-  '/options': typeof OptionsRoute
-  '/paper-trading': typeof PaperTradingRoute
-  '/portfolio': typeof PortfolioRoute
-  '/risk': typeof RiskRoute
-  '/scanner': typeof ScannerRoute
-  '/settings': typeof SettingsRoute
-  '/signals': typeof SignalsRoute
+  '/_authenticated/journal': typeof AuthenticatedJournalRoute
+  '/_authenticated/news': typeof AuthenticatedNewsRoute
+  '/_authenticated/options': typeof AuthenticatedOptionsRoute
+  '/_authenticated/paper-trading': typeof AuthenticatedPaperTradingRoute
+  '/_authenticated/portfolio': typeof AuthenticatedPortfolioRoute
+  '/_authenticated/risk': typeof AuthenticatedRiskRoute
+  '/_authenticated/scanner': typeof AuthenticatedScannerRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/signals': typeof AuthenticatedSignalsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/journal'
     | '/news'
     | '/options'
@@ -121,9 +121,9 @@ export interface FileRouteTypes {
     | '/scanner'
     | '/settings'
     | '/signals'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/journal'
     | '/news'
     | '/options'
@@ -133,119 +133,120 @@ export interface FileRouteTypes {
     | '/scanner'
     | '/settings'
     | '/signals'
+    | '/'
   id:
     | '__root__'
-    | '/'
-    | '/journal'
-    | '/news'
-    | '/options'
-    | '/paper-trading'
-    | '/portfolio'
-    | '/risk'
-    | '/scanner'
-    | '/settings'
-    | '/signals'
+    | '/_authenticated/journal'
+    | '/_authenticated/news'
+    | '/_authenticated/options'
+    | '/_authenticated/paper-trading'
+    | '/_authenticated/portfolio'
+    | '/_authenticated/risk'
+    | '/_authenticated/scanner'
+    | '/_authenticated/settings'
+    | '/_authenticated/signals'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  JournalRoute: typeof JournalRoute
-  NewsRoute: typeof NewsRoute
-  OptionsRoute: typeof OptionsRoute
-  PaperTradingRoute: typeof PaperTradingRoute
-  PortfolioRoute: typeof PortfolioRoute
-  RiskRoute: typeof RiskRoute
-  ScannerRoute: typeof ScannerRoute
-  SettingsRoute: typeof SettingsRoute
-  SignalsRoute: typeof SignalsRoute
+  AuthenticatedJournalRoute: typeof AuthenticatedJournalRoute
+  AuthenticatedNewsRoute: typeof AuthenticatedNewsRoute
+  AuthenticatedOptionsRoute: typeof AuthenticatedOptionsRoute
+  AuthenticatedPaperTradingRoute: typeof AuthenticatedPaperTradingRoute
+  AuthenticatedPortfolioRoute: typeof AuthenticatedPortfolioRoute
+  AuthenticatedRiskRoute: typeof AuthenticatedRiskRoute
+  AuthenticatedScannerRoute: typeof AuthenticatedScannerRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSignalsRoute: typeof AuthenticatedSignalsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signals': {
-      id: '/signals'
-      path: '/signals'
-      fullPath: '/signals'
-      preLoaderRoute: typeof SignalsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/scanner': {
-      id: '/scanner'
-      path: '/scanner'
-      fullPath: '/scanner'
-      preLoaderRoute: typeof ScannerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/risk': {
-      id: '/risk'
-      path: '/risk'
-      fullPath: '/risk'
-      preLoaderRoute: typeof RiskRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portfolio': {
-      id: '/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
-      preLoaderRoute: typeof PortfolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/paper-trading': {
-      id: '/paper-trading'
-      path: '/paper-trading'
-      fullPath: '/paper-trading'
-      preLoaderRoute: typeof PaperTradingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/options': {
-      id: '/options'
-      path: '/options'
-      fullPath: '/options'
-      preLoaderRoute: typeof OptionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/journal': {
-      id: '/journal'
-      path: '/journal'
-      fullPath: '/journal'
-      preLoaderRoute: typeof JournalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/signals': {
+      id: '/_authenticated/signals'
+      path: '/signals'
+      fullPath: '/signals'
+      preLoaderRoute: typeof AuthenticatedSignalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/scanner': {
+      id: '/_authenticated/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof AuthenticatedScannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/risk': {
+      id: '/_authenticated/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof AuthenticatedRiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/portfolio': {
+      id: '/_authenticated/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof AuthenticatedPortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/paper-trading': {
+      id: '/_authenticated/paper-trading'
+      path: '/paper-trading'
+      fullPath: '/paper-trading'
+      preLoaderRoute: typeof AuthenticatedPaperTradingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/options': {
+      id: '/_authenticated/options'
+      path: '/options'
+      fullPath: '/options'
+      preLoaderRoute: typeof AuthenticatedOptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/news': {
+      id: '/_authenticated/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof AuthenticatedNewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/journal': {
+      id: '/_authenticated/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof AuthenticatedJournalRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  JournalRoute: JournalRoute,
-  NewsRoute: NewsRoute,
-  OptionsRoute: OptionsRoute,
-  PaperTradingRoute: PaperTradingRoute,
-  PortfolioRoute: PortfolioRoute,
-  RiskRoute: RiskRoute,
-  ScannerRoute: ScannerRoute,
-  SettingsRoute: SettingsRoute,
-  SignalsRoute: SignalsRoute,
+  AuthenticatedJournalRoute: AuthenticatedJournalRoute,
+  AuthenticatedNewsRoute: AuthenticatedNewsRoute,
+  AuthenticatedOptionsRoute: AuthenticatedOptionsRoute,
+  AuthenticatedPaperTradingRoute: AuthenticatedPaperTradingRoute,
+  AuthenticatedPortfolioRoute: AuthenticatedPortfolioRoute,
+  AuthenticatedRiskRoute: AuthenticatedRiskRoute,
+  AuthenticatedScannerRoute: AuthenticatedScannerRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSignalsRoute: AuthenticatedSignalsRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
