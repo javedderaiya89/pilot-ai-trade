@@ -17,6 +17,7 @@ import { Route as AuthenticatedSignalsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
 import { Route as AuthenticatedRiskRouteImport } from './routes/_authenticated/risk'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPortfolioRouteImport } from './routes/_authenticated/portfolio'
 import { Route as AuthenticatedPaperTradingRouteImport } from './routes/_authenticated/paper-trading'
 import { Route as AuthenticatedOptionsRouteImport } from './routes/_authenticated/options'
@@ -62,6 +63,11 @@ const AuthenticatedRiskRoute = AuthenticatedRiskRouteImport.update({
   path: '/risk',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPortfolioRoute = AuthenticatedPortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/options': typeof AuthenticatedOptionsRoute
   '/paper-trading': typeof AuthenticatedPaperTradingRoute
   '/portfolio': typeof AuthenticatedPortfolioRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/risk': typeof AuthenticatedRiskRoute
   '/scanner': typeof AuthenticatedScannerRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/options': typeof AuthenticatedOptionsRoute
   '/paper-trading': typeof AuthenticatedPaperTradingRoute
   '/portfolio': typeof AuthenticatedPortfolioRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/risk': typeof AuthenticatedRiskRoute
   '/scanner': typeof AuthenticatedScannerRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/_authenticated/options': typeof AuthenticatedOptionsRoute
   '/_authenticated/paper-trading': typeof AuthenticatedPaperTradingRoute
   '/_authenticated/portfolio': typeof AuthenticatedPortfolioRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/risk': typeof AuthenticatedRiskRoute
   '/_authenticated/scanner': typeof AuthenticatedScannerRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/options'
     | '/paper-trading'
     | '/portfolio'
+    | '/profile'
     | '/risk'
     | '/scanner'
     | '/settings'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/options'
     | '/paper-trading'
     | '/portfolio'
+    | '/profile'
     | '/risk'
     | '/scanner'
     | '/settings'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/_authenticated/options'
     | '/_authenticated/paper-trading'
     | '/_authenticated/portfolio'
+    | '/_authenticated/profile'
     | '/_authenticated/risk'
     | '/_authenticated/scanner'
     | '/_authenticated/settings'
@@ -243,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRiskRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/portfolio': {
       id: '/_authenticated/portfolio'
       path: '/portfolio'
@@ -287,6 +306,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOptionsRoute: typeof AuthenticatedOptionsRoute
   AuthenticatedPaperTradingRoute: typeof AuthenticatedPaperTradingRoute
   AuthenticatedPortfolioRoute: typeof AuthenticatedPortfolioRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedRiskRoute: typeof AuthenticatedRiskRoute
   AuthenticatedScannerRoute: typeof AuthenticatedScannerRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -300,6 +320,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOptionsRoute: AuthenticatedOptionsRoute,
   AuthenticatedPaperTradingRoute: AuthenticatedPaperTradingRoute,
   AuthenticatedPortfolioRoute: AuthenticatedPortfolioRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedRiskRoute: AuthenticatedRiskRoute,
   AuthenticatedScannerRoute: AuthenticatedScannerRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
