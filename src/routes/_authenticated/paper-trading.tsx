@@ -45,13 +45,6 @@ function Paper() {
     })();
   }, []);
 
-  async function persistSettings(nextCapital: number, nextRisk: number) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("user_settings").upsert({
-      user_id: user.id, virtual_capital: nextCapital, risk_per_trade: nextRisk,
-    }, { onConflict: "user_id" });
-  }
 
   // Position sizing inputs
   const [entry, setEntry] = useState(2945.20);
