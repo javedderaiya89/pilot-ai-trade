@@ -29,9 +29,29 @@ const monthlyPnl = [
 ];
 
 function Paper() {
-  // Virtual capital & risk settings
+  // Virtual capital & risk settings (loaded from user_settings)
   const [capital, setCapital] = useState(100000);
   const [riskPct, setRiskPct] = useState(1.0);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("user_settings").select("virtual_capital,risk_per_trade").eq("user_id", user.id).maybeSingle();
+      if (data) {
+        setCapital(Number(data.virtual_capital));
+        setRiskPct(Number(data.risk_per_trade));
+      }
+    })();
+  }, []);
+
+  async function persistSettings(nextCapital: number, nextRisk: number) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("user_settings").upsert({
+      user_id: user.id, virtual_capital: nextCapital, risk_per_trade: nextRisk,
+    }, { onConflict: "user_id" });
+  }
 
   // Position sizing inputs
   const [entry, setEntry] = useState(2945.20);
