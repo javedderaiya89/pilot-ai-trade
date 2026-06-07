@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedSignalsRouteImport } from './routes/_authenticated/signals'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -20,59 +21,64 @@ import { Route as AuthenticatedOptionsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedNewsRouteImport } from './routes/_authenticated/news'
 import { Route as AuthenticatedJournalRouteImport } from './routes/_authenticated/journal'
 
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/_authenticated/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSignalsRoute = AuthenticatedSignalsRouteImport.update({
-  id: '/_authenticated/signals',
+  id: '/signals',
   path: '/signals',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/_authenticated/settings',
+  id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedScannerRoute = AuthenticatedScannerRouteImport.update({
-  id: '/_authenticated/scanner',
+  id: '/scanner',
   path: '/scanner',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedRiskRoute = AuthenticatedRiskRouteImport.update({
-  id: '/_authenticated/risk',
+  id: '/risk',
   path: '/risk',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPortfolioRoute = AuthenticatedPortfolioRouteImport.update({
-  id: '/_authenticated/portfolio',
+  id: '/portfolio',
   path: '/portfolio',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPaperTradingRoute =
   AuthenticatedPaperTradingRouteImport.update({
-    id: '/_authenticated/paper-trading',
+    id: '/paper-trading',
     path: '/paper-trading',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedOptionsRoute = AuthenticatedOptionsRouteImport.update({
-  id: '/_authenticated/options',
+  id: '/options',
   path: '/options',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNewsRoute = AuthenticatedNewsRouteImport.update({
-  id: '/_authenticated/news',
+  id: '/news',
   path: '/news',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedJournalRoute = AuthenticatedJournalRouteImport.update({
-  id: '/_authenticated/journal',
+  id: '/journal',
   path: '/journal',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthenticatedIndexRoute
   '/journal': typeof AuthenticatedJournalRoute
   '/news': typeof AuthenticatedNewsRoute
   '/options': typeof AuthenticatedOptionsRoute
@@ -82,7 +88,6 @@ export interface FileRoutesByFullPath {
   '/scanner': typeof AuthenticatedScannerRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/signals': typeof AuthenticatedSignalsRoute
-  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
   '/journal': typeof AuthenticatedJournalRoute
@@ -98,6 +103,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/journal': typeof AuthenticatedJournalRoute
   '/_authenticated/news': typeof AuthenticatedNewsRoute
   '/_authenticated/options': typeof AuthenticatedOptionsRoute
@@ -112,6 +118,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/journal'
     | '/news'
     | '/options'
@@ -121,7 +128,6 @@ export interface FileRouteTypes {
     | '/scanner'
     | '/settings'
     | '/signals'
-    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/journal'
@@ -136,6 +142,7 @@ export interface FileRouteTypes {
     | '/'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/_authenticated/journal'
     | '/_authenticated/news'
     | '/_authenticated/options'
@@ -149,6 +156,92 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/signals': {
+      id: '/_authenticated/signals'
+      path: '/signals'
+      fullPath: '/signals'
+      preLoaderRoute: typeof AuthenticatedSignalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/scanner': {
+      id: '/_authenticated/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof AuthenticatedScannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/risk': {
+      id: '/_authenticated/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof AuthenticatedRiskRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portfolio': {
+      id: '/_authenticated/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof AuthenticatedPortfolioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/paper-trading': {
+      id: '/_authenticated/paper-trading'
+      path: '/paper-trading'
+      fullPath: '/paper-trading'
+      preLoaderRoute: typeof AuthenticatedPaperTradingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/options': {
+      id: '/_authenticated/options'
+      path: '/options'
+      fullPath: '/options'
+      preLoaderRoute: typeof AuthenticatedOptionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/news': {
+      id: '/_authenticated/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof AuthenticatedNewsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/journal': {
+      id: '/_authenticated/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof AuthenticatedJournalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+  }
+}
+
+interface AuthenticatedRouteRouteChildren {
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRoute
   AuthenticatedNewsRoute: typeof AuthenticatedNewsRoute
   AuthenticatedOptionsRoute: typeof AuthenticatedOptionsRoute
@@ -161,82 +254,7 @@ export interface RootRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/signals': {
-      id: '/_authenticated/signals'
-      path: '/signals'
-      fullPath: '/signals'
-      preLoaderRoute: typeof AuthenticatedSignalsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/scanner': {
-      id: '/_authenticated/scanner'
-      path: '/scanner'
-      fullPath: '/scanner'
-      preLoaderRoute: typeof AuthenticatedScannerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/risk': {
-      id: '/_authenticated/risk'
-      path: '/risk'
-      fullPath: '/risk'
-      preLoaderRoute: typeof AuthenticatedRiskRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/portfolio': {
-      id: '/_authenticated/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
-      preLoaderRoute: typeof AuthenticatedPortfolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/paper-trading': {
-      id: '/_authenticated/paper-trading'
-      path: '/paper-trading'
-      fullPath: '/paper-trading'
-      preLoaderRoute: typeof AuthenticatedPaperTradingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/options': {
-      id: '/_authenticated/options'
-      path: '/options'
-      fullPath: '/options'
-      preLoaderRoute: typeof AuthenticatedOptionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/news': {
-      id: '/_authenticated/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof AuthenticatedNewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/journal': {
-      id: '/_authenticated/journal'
-      path: '/journal'
-      fullPath: '/journal'
-      preLoaderRoute: typeof AuthenticatedJournalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
-}
-
-const rootRouteChildren: RootRouteChildren = {
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedJournalRoute: AuthenticatedJournalRoute,
   AuthenticatedNewsRoute: AuthenticatedNewsRoute,
   AuthenticatedOptionsRoute: AuthenticatedOptionsRoute,
@@ -247,6 +265,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSignalsRoute: AuthenticatedSignalsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
