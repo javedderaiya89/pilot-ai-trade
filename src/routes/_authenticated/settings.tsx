@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [{ title: "Settings — TradePilot AI" }] }),
   component: Settings,
 });

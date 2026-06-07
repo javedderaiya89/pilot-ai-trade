@@ -5,7 +5,7 @@ import { buildOptionChain, indices, inr } from "@/lib/mock-data";
 import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from "recharts";
 
-export const Route = createFileRoute("/options")({
+export const Route = createFileRoute("/_authenticated/options")({
   head: () => ({ meta: [{ title: "Options Analysis — TradePilot AI" }] }),
   component: Options,
 });

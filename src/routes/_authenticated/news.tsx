@@ -4,7 +4,7 @@ import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits"
 import { news } from "@/lib/mock-data";
 import { useState } from "react";
 
-export const Route = createFileRoute("/news")({
+export const Route = createFileRoute("/_authenticated/news")({
   head: () => ({ meta: [{ title: "News Intelligence — TradePilot AI" }] }),
   component: News,
 });

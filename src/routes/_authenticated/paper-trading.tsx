@@ -6,10 +6,11 @@ import {
   Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine,
 } from "recharts";
 import { Wallet, Calculator, TrendingUp, TrendingDown, Target, ShieldAlert, Settings2, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/paper-trading")({
+export const Route = createFileRoute("/_authenticated/paper-trading")({
   head: () => ({ meta: [{ title: "Paper Trading — TradePilot AI" }] }),
   component: Paper,
 });
@@ -28,9 +29,22 @@ const monthlyPnl = [
 ];
 
 function Paper() {
-  // Virtual capital & risk settings
+  // Virtual capital & risk settings (loaded from user_settings)
   const [capital, setCapital] = useState(100000);
   const [riskPct, setRiskPct] = useState(1.0);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("user_settings").select("virtual_capital,risk_per_trade").eq("user_id", user.id).maybeSingle();
+      if (data) {
+        setCapital(Number(data.virtual_capital));
+        setRiskPct(Number(data.risk_per_trade));
+      }
+    })();
+  }, []);
+
 
   // Position sizing inputs
   const [entry, setEntry] = useState(2945.20);

@@ -5,7 +5,7 @@ import { indices, topGainers, topLosers, mostActive, sentiment, equityCurve, inr
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ArrowDown, ArrowUp, Flame, Activity, Newspaper } from "lucide-react";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({ meta: [
     { title: "Dashboard — TradePilot AI" },
     { name: "description", content: "Live NIFTY, BANKNIFTY, FINNIFTY, SENSEX dashboard with market breadth, sentiment, top movers and AI insights." },

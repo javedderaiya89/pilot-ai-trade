@@ -5,7 +5,7 @@ import { ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { inr } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/risk")({
+export const Route = createFileRoute("/_authenticated/risk")({
   head: () => ({ meta: [{ title: "Risk Management — TradePilot AI" }] }),
   component: Risk,
 });
