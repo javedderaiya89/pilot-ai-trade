@@ -5,7 +5,7 @@ import { stocks, inr } from "@/lib/mock-data";
 import { useState } from "react";
 import { Filter, Search } from "lucide-react";
 
-export const Route = createFileRoute("/scanner")({
+export const Route = createFileRoute("/_authenticated/scanner")({
   head: () => ({ meta: [{ title: "Market Scanner — TradePilot AI" }] }),
   component: Scanner,
 });

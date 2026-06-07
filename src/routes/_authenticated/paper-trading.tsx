@@ -9,7 +9,7 @@ import { Wallet, Calculator, TrendingUp, TrendingDown, Target, ShieldAlert, Sett
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/paper-trading")({
+export const Route = createFileRoute("/_authenticated/paper-trading")({
   head: () => ({ meta: [{ title: "Paper Trading — TradePilot AI" }] }),
   component: Paper,
 });

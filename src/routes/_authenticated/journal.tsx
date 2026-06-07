@@ -4,7 +4,7 @@ import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits"
 import { journal, inr } from "@/lib/mock-data";
 import { BookOpen, Plus } from "lucide-react";
 
-export const Route = createFileRoute("/journal")({
+export const Route = createFileRoute("/_authenticated/journal")({
   head: () => ({ meta: [{ title: "Trade Journal — TradePilot AI" }] }),
   component: Journal,
 });

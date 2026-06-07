@@ -4,7 +4,7 @@ import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits"
 import { positions, closedPositions, equityCurve, monthlyPerf, inr } from "@/lib/mock-data";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell, Area, AreaChart } from "recharts";
 
-export const Route = createFileRoute("/portfolio")({
+export const Route = createFileRoute("/_authenticated/portfolio")({
   head: () => ({ meta: [{ title: "Portfolio — TradePilot AI" }] }),
   component: Portfolio,
 });

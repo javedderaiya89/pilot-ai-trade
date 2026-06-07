@@ -6,7 +6,7 @@ import { Sparkles, TrendingUp, TrendingDown, Search, Activity, Target, ShieldAle
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/signals")({
+export const Route = createFileRoute("/_authenticated/signals")({
   head: () => ({ meta: [{ title: "AI Signals — TradePilot AI" }] }),
   component: Signals,
 });
