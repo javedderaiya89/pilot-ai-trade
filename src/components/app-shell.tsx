@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, Radar, LineChart, Sparkles, Wallet, Briefcase,
   BookOpen, Newspaper, ShieldAlert, Settings, TrendingUp, Search,
-  LogOut, User as UserIcon,
+  LogOut, User as UserIcon, Activity,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -12,6 +12,7 @@ const items = [
   { to: "/scanner", label: "Market Scanner", icon: Radar },
   { to: "/options", label: "Options Analysis", icon: LineChart },
   { to: "/signals", label: "AI Signals", icon: Sparkles },
+  { to: "/signal-performance", label: "Signal Performance", icon: Activity },
   { to: "/paper-trading", label: "Paper Trading", icon: Wallet },
   { to: "/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/journal", label: "Trade Journal", icon: BookOpen },
