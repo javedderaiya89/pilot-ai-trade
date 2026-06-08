@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedSignalsRouteImport } from './routes/_authenticated/signals'
+import { Route as AuthenticatedSignalPerformanceRouteImport } from './routes/_authenticated/signal-performance'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
 import { Route as AuthenticatedRiskRouteImport } from './routes/_authenticated/risk'
@@ -48,6 +49,12 @@ const AuthenticatedSignalsRoute = AuthenticatedSignalsRouteImport.update({
   path: '/signals',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSignalPerformanceRoute =
+  AuthenticatedSignalPerformanceRouteImport.update({
+    id: '/signal-performance',
+    path: '/signal-performance',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -108,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/risk': typeof AuthenticatedRiskRoute
   '/scanner': typeof AuthenticatedScannerRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/signal-performance': typeof AuthenticatedSignalPerformanceRoute
   '/signals': typeof AuthenticatedSignalsRoute
 }
 export interface FileRoutesByTo {
@@ -122,6 +130,7 @@ export interface FileRoutesByTo {
   '/risk': typeof AuthenticatedRiskRoute
   '/scanner': typeof AuthenticatedScannerRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/signal-performance': typeof AuthenticatedSignalPerformanceRoute
   '/signals': typeof AuthenticatedSignalsRoute
   '/': typeof AuthenticatedIndexRoute
 }
@@ -139,6 +148,7 @@ export interface FileRoutesById {
   '/_authenticated/risk': typeof AuthenticatedRiskRoute
   '/_authenticated/scanner': typeof AuthenticatedScannerRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/signal-performance': typeof AuthenticatedSignalPerformanceRoute
   '/_authenticated/signals': typeof AuthenticatedSignalsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/risk'
     | '/scanner'
     | '/settings'
+    | '/signal-performance'
     | '/signals'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/risk'
     | '/scanner'
     | '/settings'
+    | '/signal-performance'
     | '/signals'
     | '/'
   id:
@@ -187,6 +199,7 @@ export interface FileRouteTypes {
     | '/_authenticated/risk'
     | '/_authenticated/scanner'
     | '/_authenticated/settings'
+    | '/_authenticated/signal-performance'
     | '/_authenticated/signals'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/signals'
       fullPath: '/signals'
       preLoaderRoute: typeof AuthenticatedSignalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/signal-performance': {
+      id: '/_authenticated/signal-performance'
+      path: '/signal-performance'
+      fullPath: '/signal-performance'
+      preLoaderRoute: typeof AuthenticatedSignalPerformanceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -310,6 +330,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRiskRoute: typeof AuthenticatedRiskRoute
   AuthenticatedScannerRoute: typeof AuthenticatedScannerRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSignalPerformanceRoute: typeof AuthenticatedSignalPerformanceRoute
   AuthenticatedSignalsRoute: typeof AuthenticatedSignalsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
@@ -324,6 +345,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRiskRoute: AuthenticatedRiskRoute,
   AuthenticatedScannerRoute: AuthenticatedScannerRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSignalPerformanceRoute: AuthenticatedSignalPerformanceRoute,
   AuthenticatedSignalsRoute: AuthenticatedSignalsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
