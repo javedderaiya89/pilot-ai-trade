@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, Radar, LineChart, Sparkles, Wallet, Briefcase,
   BookOpen, Newspaper, ShieldAlert, Settings, TrendingUp, Search,
-  LogOut, User as UserIcon, Activity,
+  LogOut, User as UserIcon, Activity, Bell, CreditCard, Link2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -18,6 +18,9 @@ const items = [
   { to: "/journal", label: "Trade Journal", icon: BookOpen },
   { to: "/news", label: "News Intelligence", icon: Newspaper },
   { to: "/risk", label: "Risk Management", icon: ShieldAlert },
+  { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/brokers", label: "Brokers", icon: Link2 },
+  { to: "/subscription", label: "Subscription", icon: CreditCard },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 

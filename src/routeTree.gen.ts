@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as LandingRouteImport } from './routes/landing'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
 import { Route as AuthenticatedSignalsRouteImport } from './routes/_authenticated/signals'
 import { Route as AuthenticatedSignalPerformanceRouteImport } from './routes/_authenticated/signal-performance'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -22,12 +24,19 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedPortfolioRouteImport } from './routes/_authenticated/portfolio'
 import { Route as AuthenticatedPaperTradingRouteImport } from './routes/_authenticated/paper-trading'
 import { Route as AuthenticatedOptionsRouteImport } from './routes/_authenticated/options'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedNewsRouteImport } from './routes/_authenticated/news'
 import { Route as AuthenticatedJournalRouteImport } from './routes/_authenticated/journal'
+import { Route as AuthenticatedBrokersRouteImport } from './routes/_authenticated/brokers'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingRoute = LandingRouteImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -44,6 +53,12 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSubscriptionRoute =
+  AuthenticatedSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSignalsRoute = AuthenticatedSignalsRouteImport.update({
   id: '/signals',
   path: '/signals',
@@ -91,6 +106,12 @@ const AuthenticatedOptionsRoute = AuthenticatedOptionsRouteImport.update({
   path: '/options',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedNewsRoute = AuthenticatedNewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -101,13 +122,21 @@ const AuthenticatedJournalRoute = AuthenticatedJournalRouteImport.update({
   path: '/journal',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBrokersRoute = AuthenticatedBrokersRouteImport.update({
+  id: '/brokers',
+  path: '/brokers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
+  '/landing': typeof LandingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/brokers': typeof AuthenticatedBrokersRoute
   '/journal': typeof AuthenticatedJournalRoute
   '/news': typeof AuthenticatedNewsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/options': typeof AuthenticatedOptionsRoute
   '/paper-trading': typeof AuthenticatedPaperTradingRoute
   '/portfolio': typeof AuthenticatedPortfolioRoute
@@ -117,12 +146,16 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/signal-performance': typeof AuthenticatedSignalPerformanceRoute
   '/signals': typeof AuthenticatedSignalsRoute
+  '/subscription': typeof AuthenticatedSubscriptionRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
+  '/landing': typeof LandingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/brokers': typeof AuthenticatedBrokersRoute
   '/journal': typeof AuthenticatedJournalRoute
   '/news': typeof AuthenticatedNewsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/options': typeof AuthenticatedOptionsRoute
   '/paper-trading': typeof AuthenticatedPaperTradingRoute
   '/portfolio': typeof AuthenticatedPortfolioRoute
@@ -132,15 +165,19 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/signal-performance': typeof AuthenticatedSignalPerformanceRoute
   '/signals': typeof AuthenticatedSignalsRoute
+  '/subscription': typeof AuthenticatedSubscriptionRoute
   '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/landing': typeof LandingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/brokers': typeof AuthenticatedBrokersRoute
   '/_authenticated/journal': typeof AuthenticatedJournalRoute
   '/_authenticated/news': typeof AuthenticatedNewsRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/options': typeof AuthenticatedOptionsRoute
   '/_authenticated/paper-trading': typeof AuthenticatedPaperTradingRoute
   '/_authenticated/portfolio': typeof AuthenticatedPortfolioRoute
@@ -150,6 +187,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/signal-performance': typeof AuthenticatedSignalPerformanceRoute
   '/_authenticated/signals': typeof AuthenticatedSignalsRoute
+  '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
@@ -157,9 +195,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/landing'
     | '/reset-password'
+    | '/brokers'
     | '/journal'
     | '/news'
+    | '/notifications'
     | '/options'
     | '/paper-trading'
     | '/portfolio'
@@ -169,12 +210,16 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signal-performance'
     | '/signals'
+    | '/subscription'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/landing'
     | '/reset-password'
+    | '/brokers'
     | '/journal'
     | '/news'
+    | '/notifications'
     | '/options'
     | '/paper-trading'
     | '/portfolio'
@@ -184,14 +229,18 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signal-performance'
     | '/signals'
+    | '/subscription'
     | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/auth'
+    | '/landing'
     | '/reset-password'
+    | '/_authenticated/brokers'
     | '/_authenticated/journal'
     | '/_authenticated/news'
+    | '/_authenticated/notifications'
     | '/_authenticated/options'
     | '/_authenticated/paper-trading'
     | '/_authenticated/portfolio'
@@ -201,12 +250,14 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/signal-performance'
     | '/_authenticated/signals'
+    | '/_authenticated/subscription'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  LandingRoute: typeof LandingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -217,6 +268,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -238,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/subscription': {
+      id: '/_authenticated/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof AuthenticatedSubscriptionRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/signals': {
@@ -303,6 +368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOptionsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/news': {
       id: '/_authenticated/news'
       path: '/news'
@@ -317,12 +389,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJournalRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/brokers': {
+      id: '/_authenticated/brokers'
+      path: '/brokers'
+      fullPath: '/brokers'
+      preLoaderRoute: typeof AuthenticatedBrokersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBrokersRoute: typeof AuthenticatedBrokersRoute
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRoute
   AuthenticatedNewsRoute: typeof AuthenticatedNewsRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedOptionsRoute: typeof AuthenticatedOptionsRoute
   AuthenticatedPaperTradingRoute: typeof AuthenticatedPaperTradingRoute
   AuthenticatedPortfolioRoute: typeof AuthenticatedPortfolioRoute
@@ -332,12 +413,15 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSignalPerformanceRoute: typeof AuthenticatedSignalPerformanceRoute
   AuthenticatedSignalsRoute: typeof AuthenticatedSignalsRoute
+  AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBrokersRoute: AuthenticatedBrokersRoute,
   AuthenticatedJournalRoute: AuthenticatedJournalRoute,
   AuthenticatedNewsRoute: AuthenticatedNewsRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedOptionsRoute: AuthenticatedOptionsRoute,
   AuthenticatedPaperTradingRoute: AuthenticatedPaperTradingRoute,
   AuthenticatedPortfolioRoute: AuthenticatedPortfolioRoute,
@@ -347,6 +431,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSignalPerformanceRoute: AuthenticatedSignalPerformanceRoute,
   AuthenticatedSignalsRoute: AuthenticatedSignalsRoute,
+  AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
@@ -356,18 +441,9 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  LandingRoute: LandingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
