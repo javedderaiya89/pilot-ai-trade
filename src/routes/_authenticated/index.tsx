@@ -44,18 +44,29 @@ function IndexCard({ idx }: { idx: typeof indices[number] }) {
 function Dashboard() {
   const sentLabel = sentiment.score >= 75 ? "Strong Bullish" : sentiment.score >= 55 ? "Bullish" : sentiment.score >= 45 ? "Neutral" : sentiment.score >= 25 ? "Bearish" : "Strong Bearish";
   const sentTone = sentiment.score >= 55 ? "bull" : sentiment.score >= 45 ? "neutral" : "bear";
+  const [segment, setSegment] = useState<MarketSegment>("All");
+  const showEquity = segment === "All" || segment === "Equity";
+  const showCommodities = segment === "All" || segment === "Commodities";
+  const showMetals = segment === "All" || segment === "Metals";
+  const commodityNewsFiltered = useMemo(() => commodityNews.filter((n) => segment === "All" || n.segment === segment), [segment]);
+
   return (
     <AppShell>
       <PageHeader
         title="Market Command Center"
-        subtitle="Real-time pulse of Indian indices, breadth, sentiment and AI-driven opportunities."
+        subtitle="Real-time pulse of Indian equities, commodities and metals with breadth, sentiment and AI-driven opportunities."
         actions={<Pill tone="info"><Activity className="size-3" /> Live</Pill>}
       />
+
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <SegmentTabs value={segment} onChange={setSegment} />
+        <span className="text-[11px] text-muted-foreground">Filter dashboard by market segment</span>
+      </div>
 
       {/* Ticker */}
       <div className="glass-panel rounded-xl overflow-hidden mb-6">
         <div className="flex gap-8 py-2.5 px-4 overflow-x-auto whitespace-nowrap text-xs font-mono">
-          {[...indices, ...indices].map((i, k) => (
+          {[...indices, ...commodities, ...metals].map((i, k) => (
             <span key={k} className="inline-flex items-center gap-2">
               <span className="text-muted-foreground">{i.symbol}</span>
               <span className="font-semibold">{inr(i.ltp)}</span>
@@ -65,9 +76,32 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        {indices.map((i) => <IndexCard key={i.symbol} idx={i} />)}
-      </div>
+      {showEquity && (
+        <>
+          <SectionTitle title="Equity Indices" subtitle="NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            {indices.map((i) => <IndexCard key={i.symbol} idx={i} />)}
+          </div>
+        </>
+      )}
+
+      {showCommodities && (
+        <>
+          <SectionTitle title="Commodities — Live" subtitle="MCX Gold, Silver, Crude Oil & Natural Gas" right={<Pill tone="info">MCX</Pill>} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            {commodities.map((c) => <CommodityCard key={c.symbol} q={c} />)}
+          </div>
+        </>
+      )}
+
+      {showMetals && (
+        <>
+          <SectionTitle title="Metals — Live" subtitle="Copper, Zinc, Aluminium, Lead & Nickel" right={<Pill tone="info">MCX / LME</Pill>} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
+            {metals.map((c) => <CommodityCard key={c.symbol} q={c} compact />)}
+          </div>
+        </>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <GlassCard className="lg:col-span-2">
