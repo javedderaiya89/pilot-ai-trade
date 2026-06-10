@@ -28,15 +28,20 @@ interface SignalRecord {
   target2: number;
   target3: number;
   status: Status;
-  segment: "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks";
+  segment: "Equity" | "Commodities" | "Metals";
+  subSegment?: "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks" | "Bullion" | "Energy" | "Base Metals";
 }
 
-const SYMBOLS: Array<[string, SignalRecord["segment"]]> = [
-  ["NIFTY", "NIFTY"], ["BANKNIFTY", "BANKNIFTY"], ["FINNIFTY", "FINNIFTY"],
-  ["RELIANCE", "Stocks"], ["TCS", "Stocks"], ["INFY", "Stocks"], ["HDFCBANK", "Stocks"],
-  ["ICICIBANK", "Stocks"], ["SBIN", "Stocks"], ["LT", "Stocks"], ["AXISBANK", "Stocks"],
-  ["WIPRO", "Stocks"], ["MARUTI", "Stocks"], ["TATAMOTORS", "Stocks"], ["ITC", "Stocks"],
-  ["ADANIENT", "Stocks"], ["BAJFINANCE", "Stocks"], ["KOTAKBANK", "Stocks"], ["HCLTECH", "Stocks"],
+const SYMBOLS: Array<[string, SignalRecord["segment"], SignalRecord["subSegment"]]> = [
+  ["NIFTY", "Equity", "NIFTY"], ["BANKNIFTY", "Equity", "BANKNIFTY"], ["FINNIFTY", "Equity", "FINNIFTY"],
+  ["RELIANCE", "Equity", "Stocks"], ["TCS", "Equity", "Stocks"], ["INFY", "Equity", "Stocks"], ["HDFCBANK", "Equity", "Stocks"],
+  ["ICICIBANK", "Equity", "Stocks"], ["SBIN", "Equity", "Stocks"], ["LT", "Equity", "Stocks"], ["AXISBANK", "Equity", "Stocks"],
+  ["WIPRO", "Equity", "Stocks"], ["MARUTI", "Equity", "Stocks"], ["TATAMOTORS", "Equity", "Stocks"], ["ITC", "Equity", "Stocks"],
+  ["ADANIENT", "Equity", "Stocks"], ["BAJFINANCE", "Equity", "Stocks"], ["KOTAKBANK", "Equity", "Stocks"], ["HCLTECH", "Equity", "Stocks"],
+  ["GOLD", "Commodities", "Bullion"], ["SILVER", "Commodities", "Bullion"],
+  ["CRUDEOIL", "Commodities", "Energy"], ["NATURALGAS", "Commodities", "Energy"],
+  ["COPPER", "Metals", "Base Metals"], ["ZINC", "Metals", "Base Metals"],
+  ["ALUMINIUM", "Metals", "Base Metals"], ["LEAD", "Metals", "Base Metals"], ["NICKEL", "Metals", "Base Metals"],
 ];
 
 const STATUSES: Status[] = ["Active", "Target 1 Hit", "Target 2 Hit", "Target 3 Hit", "Stop Loss Hit"];
