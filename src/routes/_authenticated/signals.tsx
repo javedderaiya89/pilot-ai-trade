@@ -3,8 +3,9 @@ import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill } from "@/components/ui-bits";
 import { aiSignals, inr, type AISignal } from "@/lib/mock-data";
 import { Sparkles, TrendingUp, TrendingDown, Search, Activity, Target, ShieldAlert, Filter } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/signals")({
   head: () => ({ meta: [{ title: "AI Signals — TradePilot AI" }] }),
