@@ -132,11 +132,13 @@ function BrokersPage() {
       user_id: user.id,
       broker: key,
       status: nextStatus,
-      mode: isConnected ? "sandbox" : "live",
-      ...(isConnected ? { disconnected_at: new Date().toISOString() } : { connected_at: new Date().toISOString(), last_sync_at: new Date().toISOString() }),
+      mode: isConnected ? "sandbox" : "live" as "sandbox" | "live",
+      connected_at: isConnected ? null : new Date().toISOString(),
+      disconnected_at: isConnected ? new Date().toISOString() : null,
+      last_sync_at: isConnected ? null : new Date().toISOString(),
     };
 
-    await supabase.from("broker_connections").upsert(upsertData, { onConflict: "user_id,broker" });
+    await supabase.from("broker_connections").upsert(upsertData as any, { onConflict: "user_id,broker" });
 
     await supabase.from("broker_activity").insert({
       user_id: user.id,
