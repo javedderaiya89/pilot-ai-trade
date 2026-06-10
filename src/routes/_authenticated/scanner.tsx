@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
-import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
-import { stocks, inr } from "@/lib/mock-data";
-import { useState } from "react";
+import { GlassCard, PageHeader, Pill } from "@/components/ui-bits";
+import { SegmentTabs, type MarketSegment } from "@/components/segment-tabs";
+import { stocks, commodities, metals, inr, type Stock, type CommodityQuote } from "@/lib/mock-data";
+import { useMemo, useState } from "react";
 import { Filter, Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/scanner")({
