@@ -38,6 +38,7 @@ export interface AISignal {
   tradeType: "Intraday" | "Swing" | "Positional";
   timeframe: string;
   reason: string;
+  segment?: MarketSegment;
 }
 
 export interface OptionRow {
@@ -81,15 +82,36 @@ export interface JournalEntry {
   tag: "Win" | "Loss" | "BE";
 }
 
+export type MarketSegment = "All" | "Equity" | "Commodities" | "Metals";
+
 export interface NewsItem {
   id: string;
   title: string;
   source: string;
   time: string;
-  category: "Global" | "Indian" | "Company" | "Sector";
+  category: "Global" | "Indian" | "Company" | "Sector" | "Commodity" | "MCX" | "Metals" | "Energy";
   sentiment: "Positive" | "Neutral" | "Negative";
   summary: string;
   symbols: string[];
+  segment?: MarketSegment;
+}
+
+export interface CommodityQuote {
+  symbol: string;
+  name: string;
+  segment: "Commodities" | "Metals";
+  unit: string;
+  ltp: number;
+  change: number;
+  changePct: number;
+  high: number;
+  low: number;
+  open: number;
+  prevClose: number;
+  volume: number;
+  rsi: number;
+  macd: "bullish" | "bearish" | "neutral";
+  exchange: "MCX" | "COMEX" | "LME";
 }
 
 export const indices: IndexQuote[] = [
@@ -251,4 +273,53 @@ export const sentiment = {
 
 export function inr(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(n);
+}
+
+// ============= Commodities & Metals =============
+
+export const commodities: CommodityQuote[] = [
+  { symbol: "GOLD", name: "Gold (MCX)", segment: "Commodities", unit: "10g", ltp: 72845, change: 412, changePct: 0.57, high: 72980, low: 72380, open: 72433, prevClose: 72433, volume: 18420, rsi: 62.4, macd: "bullish", exchange: "MCX" },
+  { symbol: "SILVER", name: "Silver (MCX)", segment: "Commodities", unit: "1kg", ltp: 89240, change: -325, changePct: -0.36, high: 89720, low: 88950, open: 89565, prevClose: 89565, volume: 22180, rsi: 48.1, macd: "neutral", exchange: "MCX" },
+  { symbol: "CRUDEOIL", name: "Crude Oil (MCX)", segment: "Commodities", unit: "1 bbl", ltp: 6485, change: 58, changePct: 0.90, high: 6512, low: 6402, open: 6427, prevClose: 6427, volume: 45120, rsi: 58.6, macd: "bullish", exchange: "MCX" },
+  { symbol: "NATURALGAS", name: "Natural Gas (MCX)", segment: "Commodities", unit: "1 mmBtu", ltp: 232.4, change: -3.8, changePct: -1.61, high: 238.5, low: 230.1, open: 236.2, prevClose: 236.2, volume: 38240, rsi: 41.2, macd: "bearish", exchange: "MCX" },
+];
+
+export const metals: CommodityQuote[] = [
+  { symbol: "COPPER", name: "Copper (MCX)", segment: "Metals", unit: "1kg", ltp: 824.5, change: 6.2, changePct: 0.76, high: 828.1, low: 816.3, open: 818.3, prevClose: 818.3, volume: 12420, rsi: 64.3, macd: "bullish", exchange: "MCX" },
+  { symbol: "ZINC", name: "Zinc (MCX)", segment: "Metals", unit: "1kg", ltp: 268.7, change: -1.4, changePct: -0.52, high: 271.2, low: 267.4, open: 270.1, prevClose: 270.1, volume: 8210, rsi: 47.8, macd: "neutral", exchange: "MCX" },
+  { symbol: "ALUMINIUM", name: "Aluminium (MCX)", segment: "Metals", unit: "1kg", ltp: 231.2, change: 2.1, changePct: 0.92, high: 232.5, low: 228.4, open: 229.1, prevClose: 229.1, volume: 6840, rsi: 59.1, macd: "bullish", exchange: "MCX" },
+  { symbol: "LEAD", name: "Lead (MCX)", segment: "Metals", unit: "1kg", ltp: 189.4, change: 0.4, changePct: 0.21, high: 190.2, low: 188.6, open: 189.0, prevClose: 189.0, volume: 4120, rsi: 52.0, macd: "neutral", exchange: "MCX" },
+  { symbol: "NICKEL", name: "Nickel (MCX)", segment: "Metals", unit: "1kg", ltp: 1542.8, change: -12.6, changePct: -0.81, high: 1562.0, low: 1538.4, open: 1555.4, prevClose: 1555.4, volume: 3260, rsi: 44.7, macd: "bearish", exchange: "MCX" },
+];
+
+export const commoditySignals: AISignal[] = [
+  { id: "c1", symbol: "GOLD", type: "BUY", entry: 72845, stopLoss: 72420, target1: 73120, target2: 73420, target3: 73850, confidence: 86, rr: 2.7, tradeType: "Swing", timeframe: "1D", reason: "Breakout above prior swing high; INR weakness & safe-haven bid", segment: "Commodities" },
+  { id: "c2", symbol: "SILVER", type: "SELL", entry: 89240, stopLoss: 89980, target1: 88600, target2: 88000, target3: 87200, confidence: 71, rr: 2.1, tradeType: "Intraday", timeframe: "15m", reason: "Rejection at 90k resistance; bearish MACD divergence", segment: "Commodities" },
+  { id: "c3", symbol: "CRUDEOIL", type: "BUY", entry: 6485, stopLoss: 6410, target1: 6540, target2: 6610, target3: 6710, confidence: 82, rr: 2.5, tradeType: "Intraday", timeframe: "30m", reason: "OPEC+ tightening narrative; demand zone reclaim", segment: "Commodities" },
+  { id: "c4", symbol: "NATURALGAS", type: "SELL", entry: 232.4, stopLoss: 238.0, target1: 226, target2: 220, target3: 212, confidence: 74, rr: 2.3, tradeType: "Swing", timeframe: "1D", reason: "Mild weather outlook; inventories above 5-yr avg", segment: "Commodities" },
+];
+
+export const metalSignals: AISignal[] = [
+  { id: "m1", symbol: "COPPER", type: "BUY", entry: 824.5, stopLoss: 816.0, target1: 832, target2: 842, target3: 856, confidence: 84, rr: 2.6, tradeType: "Swing", timeframe: "1D", reason: "LME inventories drawdown; China stimulus tailwind", segment: "Metals" },
+  { id: "m2", symbol: "ZINC", type: "SELL", entry: 268.7, stopLoss: 272.5, target1: 264, target2: 260, target3: 254, confidence: 70, rr: 2.0, tradeType: "Intraday", timeframe: "15m", reason: "Lower-high pattern at supply zone", segment: "Metals" },
+  { id: "m3", symbol: "ALUMINIUM", type: "BUY", entry: 231.2, stopLoss: 228.4, target1: 234, target2: 237, target3: 241, confidence: 78, rr: 2.3, tradeType: "Swing", timeframe: "1D", reason: "Power-cost tailwind; bullish EMA stack", segment: "Metals" },
+  { id: "m4", symbol: "NICKEL", type: "SELL", entry: 1542.8, stopLoss: 1568.0, target1: 1518, target2: 1492, target3: 1460, confidence: 73, rr: 2.1, tradeType: "Swing", timeframe: "1D", reason: "Indonesia supply glut; breakdown of 50DMA", segment: "Metals" },
+  { id: "m5", symbol: "LEAD", type: "BUY", entry: 189.4, stopLoss: 187.2, target1: 192, target2: 195, target3: 199, confidence: 68, rr: 1.9, tradeType: "Intraday", timeframe: "30m", reason: "Range breakout with rising volume", segment: "Metals" },
+];
+
+export const commodityNews: NewsItem[] = [
+  { id: "cn1", title: "Gold scales fresh highs on Fed rate-cut bets and central bank buying", source: "Reuters", time: "1h ago", category: "Commodity", sentiment: "Positive", summary: "EM central banks continued to accumulate; ETF inflows resume.", symbols: ["GOLD","SILVER"], segment: "Commodities" },
+  { id: "cn2", title: "MCX Crude futures jump 1% as OPEC+ signals extended production cuts", source: "Mint", time: "3h ago", category: "MCX", sentiment: "Positive", summary: "Saudi-Russia output discipline supports backwardation in WTI curve.", symbols: ["CRUDEOIL"], segment: "Commodities" },
+  { id: "cn3", title: "Natural gas slides as US storage build beats consensus", source: "Bloomberg", time: "4h ago", category: "Energy", sentiment: "Negative", summary: "Henry Hub futures fall; mild weather caps cooling demand.", symbols: ["NATURALGAS"], segment: "Commodities" },
+  { id: "cn4", title: "LME copper hits 3-month high as China factory PMI returns to expansion", source: "Reuters", time: "5h ago", category: "Metals", sentiment: "Positive", summary: "Stimulus optimism lifts industrial metals; LME inventories at multi-year lows.", symbols: ["COPPER","ZINC","ALUMINIUM"], segment: "Metals" },
+  { id: "cn5", title: "Nickel slumps on Indonesia supply surge; LME warehouse stocks balloon", source: "FT", time: "6h ago", category: "Metals", sentiment: "Negative", summary: "Ex-China supply overwhelms EV battery demand growth in Q2.", symbols: ["NICKEL"], segment: "Metals" },
+  { id: "cn6", title: "Silver outperforms gold as industrial demand from solar widens deficit", source: "ET Markets", time: "7h ago", category: "MCX", sentiment: "Positive", summary: "Gold-silver ratio compresses; photovoltaic demand structural.", symbols: ["SILVER","GOLD"], segment: "Commodities" },
+  { id: "cn7", title: "Aluminium rallies on Europe smelter restart delays", source: "S&P Global", time: "8h ago", category: "Metals", sentiment: "Positive", summary: "Power-cost squeeze keeps ~1.2Mt of EU capacity offline.", symbols: ["ALUMINIUM"], segment: "Metals" },
+  { id: "cn8", title: "MCX volumes hit record on commodity F&O participation", source: "BusinessLine", time: "10h ago", category: "MCX", sentiment: "Neutral", summary: "Retail participation in bullion options crosses ₹40,000cr notional.", symbols: ["GOLD","SILVER","CRUDEOIL"], segment: "Commodities" },
+];
+
+export function segmentOfSymbol(sym: string): MarketSegment {
+  if (commodities.find((c) => c.symbol === sym)) return "Commodities";
+  if (metals.find((m) => m.symbol === sym)) return "Metals";
+  return "Equity";
 }

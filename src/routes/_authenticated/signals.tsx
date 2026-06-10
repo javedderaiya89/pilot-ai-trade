@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill } from "@/components/ui-bits";
-import { aiSignals, inr, type AISignal } from "@/lib/mock-data";
+import { SegmentTabs, type MarketSegment } from "@/components/segment-tabs";
+import { aiSignals, commoditySignals, metalSignals, inr, segmentOfSymbol, type AISignal } from "@/lib/mock-data";
 import { Sparkles, TrendingUp, TrendingDown, Search, Activity, Target, ShieldAlert, Filter } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -12,8 +13,8 @@ export const Route = createFileRoute("/_authenticated/signals")({
   component: Signals,
 });
 
-type Segment = "All" | "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks";
-const SEGMENTS: Segment[] = ["All", "NIFTY", "BANKNIFTY", "FINNIFTY", "Stocks"];
+type EquitySub = "All" | "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks";
+const EQUITY_SUBS: EquitySub[] = ["All", "NIFTY", "BANKNIFTY", "FINNIFTY", "Stocks"];
 
 // Extra realistic paper-trading signals to make the terminal feel populated
 const extraSignals: AISignal[] = [
@@ -25,9 +26,14 @@ const extraSignals: AISignal[] = [
   { id: "s14", symbol: "LT", type: "BUY", entry: 3612, stopLoss: 3568, target1: 3660, target2: 3712, target3: 3780, confidence: 81, rr: 2.6, tradeType: "Positional", timeframe: "1W", reason: "Order book momentum; multi-week consolidation breakout" },
 ];
 
-const ALL: AISignal[] = [...aiSignals, ...extraSignals];
+const ALL: AISignal[] = [
+  ...aiSignals.map((s) => ({ ...s, segment: "Equity" as MarketSegment })),
+  ...extraSignals.map((s) => ({ ...s, segment: "Equity" as MarketSegment })),
+  ...commoditySignals,
+  ...metalSignals,
+];
 
-function segmentOf(sym: string): Segment {
+function equitySubOf(sym: string): EquitySub {
   if (sym.startsWith("NIFTY")) return "NIFTY";
   if (sym.startsWith("BANKNIFTY")) return "BANKNIFTY";
   if (sym.startsWith("FINNIFTY")) return "FINNIFTY";
@@ -35,7 +41,8 @@ function segmentOf(sym: string): Segment {
 }
 
 function Signals() {
-  const [segment, setSegment] = useState<Segment>("All");
+  const [segment, setSegment] = useState<MarketSegment>("All");
+  const [equitySub, setEquitySub] = useState<EquitySub>("All");
   const [side, setSide] = useState<"All" | "BUY" | "SELL">("All");
   const [tradeType, setTradeType] = useState<"All" | "Intraday" | "Swing" | "Positional">("All");
   const [minConf, setMinConf] = useState(60);
@@ -60,7 +67,9 @@ function Signals() {
 
   const rows = useMemo(() => {
     const filtered = ALL.filter((s) => {
-      if (segment !== "All" && segmentOf(s.symbol) !== segment) return false;
+      const segOf = s.segment ?? segmentOfSymbol(s.symbol);
+      if (segment !== "All" && segOf !== segment) return false;
+      if (segment === "Equity" && equitySub !== "All" && equitySubOf(s.symbol) !== equitySub) return false;
       if (side !== "All" && s.type !== side) return false;
       if (tradeType !== "All" && s.tradeType !== tradeType) return false;
       if (s.confidence < minConf) return false;
@@ -71,7 +80,7 @@ function Signals() {
       if (sortKey === "symbol") return a.symbol.localeCompare(b.symbol);
       return (b[sortKey] as number) - (a[sortKey] as number);
     });
-  }, [segment, side, tradeType, minConf, query, sortKey]);
+  }, [segment, equitySub, side, tradeType, minConf, query, sortKey]);
 
   const buyCount = rows.filter((r) => r.type === "BUY").length;
   const sellCount = rows.filter((r) => r.type === "SELL").length;
@@ -82,7 +91,7 @@ function Signals() {
     <AppShell>
       <PageHeader
         title="AI Signals Terminal"
-        subtitle="Algorithmic trade ideas across NIFTY, BANKNIFTY, FINNIFTY and equities — entries, stops, multi-target RR with confidence scoring."
+        subtitle="Algorithmic trade ideas across Equity, Commodities (Gold, Silver, Crude, Natural Gas) and Metals (Copper, Zinc, Aluminium, Lead, Nickel) — entries, stops, multi-target R:R."
         actions={<Pill tone="info"><Sparkles className="size-3" /> {ALL.length} signals live</Pill>}
       />
 
@@ -113,21 +122,28 @@ function Signals() {
             <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground pr-2 border-r border-border/40">
               <Filter className="size-3" /> Segment
             </div>
-            {SEGMENTS.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSegment(s)}
-                className={cn(
-                  "px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors",
-                  segment === s
-                    ? "bg-primary/15 border-primary/40 text-primary"
-                    : "border-border/60 text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {s}
-              </button>
-            ))}
+            <SegmentTabs value={segment} onChange={(v) => { setSegment(v); if (v !== "Equity") setEquitySub("All"); }} />
           </div>
+
+          {segment === "Equity" && (
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground pr-2">Equity Index</div>
+              {EQUITY_SUBS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setEquitySub(s)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors",
+                    equitySub === s
+                      ? "bg-accent/15 border-accent/40 text-accent"
+                      : "border-border/60 text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex rounded-md overflow-hidden border border-border/60">
@@ -190,7 +206,7 @@ function Signals() {
                   <tr key={s.id} className={cn("border-b border-border/20 hover:bg-surface/40 transition-colors", i % 2 === 0 ? "bg-transparent" : "bg-surface/20")}>
                     <td className="px-4 py-3">
                       <div className="font-semibold">{s.symbol}</div>
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{segmentOf(s.symbol)} • {s.timeframe}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.segment ?? segmentOfSymbol(s.symbol)} • {s.timeframe}</div>
                     </td>
                     <td className="px-3 py-3">
                       <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold border",

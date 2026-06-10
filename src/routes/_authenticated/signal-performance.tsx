@@ -28,15 +28,20 @@ interface SignalRecord {
   target2: number;
   target3: number;
   status: Status;
-  segment: "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks";
+  segment: "Equity" | "Commodities" | "Metals";
+  subSegment?: "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks" | "Bullion" | "Energy" | "Base Metals";
 }
 
-const SYMBOLS: Array<[string, SignalRecord["segment"]]> = [
-  ["NIFTY", "NIFTY"], ["BANKNIFTY", "BANKNIFTY"], ["FINNIFTY", "FINNIFTY"],
-  ["RELIANCE", "Stocks"], ["TCS", "Stocks"], ["INFY", "Stocks"], ["HDFCBANK", "Stocks"],
-  ["ICICIBANK", "Stocks"], ["SBIN", "Stocks"], ["LT", "Stocks"], ["AXISBANK", "Stocks"],
-  ["WIPRO", "Stocks"], ["MARUTI", "Stocks"], ["TATAMOTORS", "Stocks"], ["ITC", "Stocks"],
-  ["ADANIENT", "Stocks"], ["BAJFINANCE", "Stocks"], ["KOTAKBANK", "Stocks"], ["HCLTECH", "Stocks"],
+const SYMBOLS: Array<[string, SignalRecord["segment"], SignalRecord["subSegment"]]> = [
+  ["NIFTY", "Equity", "NIFTY"], ["BANKNIFTY", "Equity", "BANKNIFTY"], ["FINNIFTY", "Equity", "FINNIFTY"],
+  ["RELIANCE", "Equity", "Stocks"], ["TCS", "Equity", "Stocks"], ["INFY", "Equity", "Stocks"], ["HDFCBANK", "Equity", "Stocks"],
+  ["ICICIBANK", "Equity", "Stocks"], ["SBIN", "Equity", "Stocks"], ["LT", "Equity", "Stocks"], ["AXISBANK", "Equity", "Stocks"],
+  ["WIPRO", "Equity", "Stocks"], ["MARUTI", "Equity", "Stocks"], ["TATAMOTORS", "Equity", "Stocks"], ["ITC", "Equity", "Stocks"],
+  ["ADANIENT", "Equity", "Stocks"], ["BAJFINANCE", "Equity", "Stocks"], ["KOTAKBANK", "Equity", "Stocks"], ["HCLTECH", "Equity", "Stocks"],
+  ["GOLD", "Commodities", "Bullion"], ["SILVER", "Commodities", "Bullion"],
+  ["CRUDEOIL", "Commodities", "Energy"], ["NATURALGAS", "Commodities", "Energy"],
+  ["COPPER", "Metals", "Base Metals"], ["ZINC", "Metals", "Base Metals"],
+  ["ALUMINIUM", "Metals", "Base Metals"], ["LEAD", "Metals", "Base Metals"], ["NICKEL", "Metals", "Base Metals"],
 ];
 
 const STATUSES: Status[] = ["Active", "Target 1 Hit", "Target 2 Hit", "Target 3 Hit", "Stop Loss Hit"];
@@ -52,9 +57,21 @@ function generateSignals(): SignalRecord[] {
   const today = new Date();
   // 180 signals over ~180 days
   for (let i = 0; i < 220; i++) {
-    const [symbol, segment] = SYMBOLS[Math.floor(seeded(i + 1) * SYMBOLS.length)];
+    const [symbol, segment, subSegment] = SYMBOLS[Math.floor(seeded(i + 1) * SYMBOLS.length)];
     const side: Side = seeded(i + 2) > 0.45 ? "BUY" : "SELL";
-    const basePrice = symbol === "NIFTY" ? 24800 : symbol === "BANKNIFTY" ? 53200 : symbol === "FINNIFTY" ? 24100 : 200 + seeded(i + 3) * 3500;
+    const basePrice = symbol === "NIFTY" ? 24800
+      : symbol === "BANKNIFTY" ? 53200
+      : symbol === "FINNIFTY" ? 24100
+      : symbol === "GOLD" ? 72800
+      : symbol === "SILVER" ? 89200
+      : symbol === "CRUDEOIL" ? 6480
+      : symbol === "NATURALGAS" ? 232
+      : symbol === "COPPER" ? 824
+      : symbol === "ZINC" ? 268
+      : symbol === "ALUMINIUM" ? 231
+      : symbol === "LEAD" ? 189
+      : symbol === "NICKEL" ? 1542
+      : 200 + seeded(i + 3) * 3500;
     const entry = +(basePrice * (1 + (seeded(i + 4) - 0.5) * 0.02)).toFixed(2);
     const slPct = 0.005 + seeded(i + 5) * 0.012;
     const t1Pct = slPct * (1.2 + seeded(i + 6) * 0.6);
@@ -80,7 +97,7 @@ function generateSignals(): SignalRecord[] {
     out.push({
       id: `SIG-${(1000 + i).toString()}`,
       date: d.toISOString().slice(0, 10),
-      symbol, segment, side, entry, stopLoss, target1, target2, target3, status,
+      symbol, segment, subSegment, side, entry, stopLoss, target1, target2, target3, status,
     });
   }
   return out;
@@ -295,7 +312,7 @@ function SignalPerformance() {
           <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground pr-2 border-r border-border/40">
             <Filter className="size-3" /> Filters
           </div>
-          <FilterGroup<typeof segment> value={segment} onChange={(v) => { setSegment(v); setPage(1); }} options={["All", "NIFTY", "BANKNIFTY", "FINNIFTY", "Stocks"]} />
+          <FilterGroup<typeof segment> value={segment} onChange={(v) => { setSegment(v); setPage(1); }} options={["All", "Equity", "Commodities", "Metals"]} />
           <FilterGroup<typeof side> value={side} onChange={(v) => { setSide(v); setPage(1); }} options={["All", "BUY", "SELL"]} tone="side" />
           <select value={status} onChange={(e) => { setStatus(e.target.value as typeof status); setPage(1); }} className="px-3 py-1.5 rounded-md border border-border/60 text-xs bg-transparent text-muted-foreground">
             <option value="All">All Statuses</option>

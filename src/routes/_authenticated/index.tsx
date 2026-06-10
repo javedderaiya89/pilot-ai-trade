@@ -1,14 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
-import { indices, topGainers, topLosers, mostActive, sentiment, equityCurve, inr, news } from "@/lib/mock-data";
+import { SegmentTabs, type MarketSegment } from "@/components/segment-tabs";
+import { indices, topGainers, topLosers, mostActive, sentiment, equityCurve, inr, news, commodities, metals, commodityNews, type CommodityQuote } from "@/lib/mock-data";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
-import { ArrowDown, ArrowUp, Flame, Activity, Newspaper } from "lucide-react";
+import { ArrowDown, ArrowUp, Flame, Activity, Newspaper, Fuel, Coins, Gem, Factory } from "lucide-react";
+import { useState, useMemo } from "react";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({ meta: [
     { title: "Dashboard — TradePilot AI" },
-    { name: "description", content: "Live NIFTY, BANKNIFTY, FINNIFTY, SENSEX dashboard with market breadth, sentiment, top movers and AI insights." },
+    { name: "description", content: "Live NIFTY, BANKNIFTY, FINNIFTY, SENSEX, Gold, Silver, Crude, Copper dashboard with breadth, sentiment and AI insights." },
   ]}),
   component: Dashboard,
 });
@@ -42,18 +44,29 @@ function IndexCard({ idx }: { idx: typeof indices[number] }) {
 function Dashboard() {
   const sentLabel = sentiment.score >= 75 ? "Strong Bullish" : sentiment.score >= 55 ? "Bullish" : sentiment.score >= 45 ? "Neutral" : sentiment.score >= 25 ? "Bearish" : "Strong Bearish";
   const sentTone = sentiment.score >= 55 ? "bull" : sentiment.score >= 45 ? "neutral" : "bear";
+  const [segment, setSegment] = useState<MarketSegment>("All");
+  const showEquity = segment === "All" || segment === "Equity";
+  const showCommodities = segment === "All" || segment === "Commodities";
+  const showMetals = segment === "All" || segment === "Metals";
+  const commodityNewsFiltered = useMemo(() => commodityNews.filter((n) => segment === "All" || n.segment === segment), [segment]);
+
   return (
     <AppShell>
       <PageHeader
         title="Market Command Center"
-        subtitle="Real-time pulse of Indian indices, breadth, sentiment and AI-driven opportunities."
+        subtitle="Real-time pulse of Indian equities, commodities and metals with breadth, sentiment and AI-driven opportunities."
         actions={<Pill tone="info"><Activity className="size-3" /> Live</Pill>}
       />
+
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <SegmentTabs value={segment} onChange={setSegment} />
+        <span className="text-[11px] text-muted-foreground">Filter dashboard by market segment</span>
+      </div>
 
       {/* Ticker */}
       <div className="glass-panel rounded-xl overflow-hidden mb-6">
         <div className="flex gap-8 py-2.5 px-4 overflow-x-auto whitespace-nowrap text-xs font-mono">
-          {[...indices, ...indices].map((i, k) => (
+          {[...indices, ...commodities, ...metals].map((i, k) => (
             <span key={k} className="inline-flex items-center gap-2">
               <span className="text-muted-foreground">{i.symbol}</span>
               <span className="font-semibold">{inr(i.ltp)}</span>
@@ -63,73 +76,105 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        {indices.map((i) => <IndexCard key={i.symbol} idx={i} />)}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <GlassCard className="lg:col-span-2">
-          <SectionTitle title="NIFTY 50 — Intraday" subtitle="1-minute chart (sample data)" right={<Pill tone="bull">+0.58%</Pill>} />
-          <div className="h-64">
-            <ResponsiveContainer>
-              <AreaChart data={equityCurve}>
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--bull)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="var(--bull)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-                <XAxis dataKey="day" stroke="var(--muted-foreground)" fontSize={11} />
-                <YAxis stroke="var(--muted-foreground)" fontSize={11} domain={["dataMin - 500", "dataMax + 500"]} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
-                <Area type="monotone" dataKey="equity" stroke="var(--bull)" strokeWidth={2} fill="url(#g1)" />
-              </AreaChart>
-            </ResponsiveContainer>
+      {showEquity && (
+        <>
+          <SectionTitle title="Equity Indices" subtitle="NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            {indices.map((i) => <IndexCard key={i.symbol} idx={i} />)}
           </div>
-        </GlassCard>
+        </>
+      )}
 
-        <GlassCard>
-          <SectionTitle title="Market Sentiment" />
-          <div className="flex flex-col items-center">
-            <div className="relative size-44">
-              <svg viewBox="0 0 200 120" className="w-full">
-                <defs>
-                  <linearGradient id="gauge" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="var(--bear)" />
-                    <stop offset="50%" stopColor="var(--warning)" />
-                    <stop offset="100%" stopColor="var(--bull)" />
-                  </linearGradient>
-                </defs>
-                <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="16" strokeLinecap="round" />
-                <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="url(#gauge)" strokeWidth="16" strokeLinecap="round"
-                  strokeDasharray={`${sentiment.score * 2.51} 999`} />
-                <text x="100" y="95" textAnchor="middle" className="fill-foreground font-mono" fontSize="28" fontWeight="700">{sentiment.score}</text>
-              </svg>
-            </div>
-            <Pill tone={sentTone as "bull" | "bear" | "neutral"} className="text-xs"><Flame className="size-3" /> {sentLabel}</Pill>
-            <div className="grid grid-cols-3 gap-3 w-full mt-4 text-center text-xs">
-              <div><div className="text-bull font-mono font-semibold">{sentiment.advances}</div><div className="text-muted-foreground">Advances</div></div>
-              <div><div className="text-bear font-mono font-semibold">{sentiment.declines}</div><div className="text-muted-foreground">Declines</div></div>
-              <div><div className="font-mono font-semibold">{sentiment.unchanged}</div><div className="text-muted-foreground">Unchanged</div></div>
-            </div>
+      {showCommodities && (
+        <>
+          <SectionTitle title="Commodities — Live" subtitle="MCX Gold, Silver, Crude Oil & Natural Gas" right={<Pill tone="info">MCX</Pill>} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            {commodities.map((c) => <CommodityCard key={c.symbol} q={c} />)}
           </div>
-        </GlassCard>
-      </div>
+        </>
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <MoversCard title="Top Gainers" tone="bull" rows={topGainers} />
-        <MoversCard title="Top Losers" tone="bear" rows={topLosers} />
-        <MoversCard title="Most Active" tone="neutral" rows={mostActive} showVol />
-      </div>
+      {showMetals && (
+        <>
+          <SectionTitle title="Metals — Live" subtitle="Copper, Zinc, Aluminium, Lead & Nickel" right={<Pill tone="info">MCX / LME</Pill>} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
+            {metals.map((c) => <CommodityCard key={c.symbol} q={c} compact />)}
+          </div>
+        </>
+      )}
+
+      {showEquity && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <GlassCard className="lg:col-span-2">
+            <SectionTitle title="NIFTY 50 — Intraday" subtitle="1-minute chart (sample data)" right={<Pill tone="bull">+0.58%</Pill>} />
+            <div className="h-64">
+              <ResponsiveContainer>
+                <AreaChart data={equityCurve}>
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--bull)" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="var(--bull)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
+                  <XAxis dataKey="day" stroke="var(--muted-foreground)" fontSize={11} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={11} domain={["dataMin - 500", "dataMax + 500"]} />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
+                  <Area type="monotone" dataKey="equity" stroke="var(--bull)" strokeWidth={2} fill="url(#g1)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </GlassCard>
+
+          <GlassCard>
+            <SectionTitle title="Market Sentiment" />
+            <div className="flex flex-col items-center">
+              <div className="relative size-44">
+                <svg viewBox="0 0 200 120" className="w-full">
+                  <defs>
+                    <linearGradient id="gauge" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="var(--bear)" />
+                      <stop offset="50%" stopColor="var(--warning)" />
+                      <stop offset="100%" stopColor="var(--bull)" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="16" strokeLinecap="round" />
+                  <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="url(#gauge)" strokeWidth="16" strokeLinecap="round"
+                    strokeDasharray={`${sentiment.score * 2.51} 999`} />
+                  <text x="100" y="95" textAnchor="middle" className="fill-foreground font-mono" fontSize="28" fontWeight="700">{sentiment.score}</text>
+                </svg>
+              </div>
+              <Pill tone={sentTone as "bull" | "bear" | "neutral"} className="text-xs"><Flame className="size-3" /> {sentLabel}</Pill>
+              <div className="grid grid-cols-3 gap-3 w-full mt-4 text-center text-xs">
+                <div><div className="text-bull font-mono font-semibold">{sentiment.advances}</div><div className="text-muted-foreground">Advances</div></div>
+                <div><div className="text-bear font-mono font-semibold">{sentiment.declines}</div><div className="text-muted-foreground">Declines</div></div>
+                <div><div className="font-mono font-semibold">{sentiment.unchanged}</div><div className="text-muted-foreground">Unchanged</div></div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      {showEquity && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <MoversCard title="Top Gainers" tone="bull" rows={topGainers} />
+          <MoversCard title="Top Losers" tone="bear" rows={topLosers} />
+          <MoversCard title="Most Active" tone="neutral" rows={mostActive} showVol />
+        </div>
+      )}
 
       <GlassCard>
-        <SectionTitle title="News Intelligence" subtitle="Curated headlines with AI sentiment tagging" right={<Pill tone="info"><Newspaper className="size-3" /> {news.length} items</Pill>} />
+        <SectionTitle
+          title={segment === "All" ? "News Intelligence" : `${segment} News`}
+          subtitle="Curated headlines with AI sentiment tagging"
+          right={<Pill tone="info"><Newspaper className="size-3" /> {(showEquity ? news.length : 0) + commodityNewsFiltered.length} items</Pill>}
+        />
         <div className="grid md:grid-cols-2 gap-3">
-          {news.slice(0, 4).map((n) => (
+          {[...(showEquity ? news.slice(0, 2) : []), ...commodityNewsFiltered.slice(0, 4)].map((n) => (
             <div key={n.id} className="rounded-lg border border-border/50 bg-surface/40 p-3">
-              <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+              <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground flex-wrap">
                 <Pill tone={n.sentiment === "Positive" ? "bull" : n.sentiment === "Negative" ? "bear" : "neutral"}>{n.sentiment}</Pill>
+                <Pill tone="info">{n.category}</Pill>
                 <span>{n.source}</span><span>•</span><span>{n.time}</span>
               </div>
               <div className="font-medium mt-2 text-sm leading-snug">{n.title}</div>
@@ -167,6 +212,38 @@ function MoversCard({ title, rows, tone, showVol }: { title: string; rows: typeo
             </div>
           </div>
         ))}
+      </div>
+    </GlassCard>
+  );
+}
+
+function CommodityCard({ q, compact }: { q: CommodityQuote; compact?: boolean }) {
+  const up = q.change >= 0;
+  const Icon = q.symbol === "GOLD" ? Coins
+    : q.symbol === "SILVER" ? Gem
+    : q.symbol === "CRUDEOIL" || q.symbol === "NATURALGAS" ? Fuel
+    : Factory;
+  return (
+    <GlassCard className="relative overflow-hidden group">
+      <div className="absolute -right-10 -top-10 size-40 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity"
+           style={{ background: up ? "var(--bull)" : "var(--bear)" }} />
+      <div className="flex items-start justify-between relative">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+            <Icon className="size-3.5" /> {q.name}
+          </div>
+          <div className={"font-mono font-bold mt-1.5 " + (compact ? "text-xl" : "text-2xl md:text-3xl")}>₹{inr(q.ltp)}</div>
+          <div className={"flex items-center gap-1 mt-1 text-sm font-medium " + (up ? "text-bull" : "text-bear")}>
+            {up ? <ArrowUp className="size-4" /> : <ArrowDown className="size-4" />}
+            {up ? "+" : ""}{q.change.toFixed(2)} ({up ? "+" : ""}{q.changePct.toFixed(2)}%)
+          </div>
+        </div>
+        <Pill tone={up ? "bull" : "bear"}>{q.exchange}</Pill>
+      </div>
+      <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-border/40 text-[11px]">
+        <div><div className="text-muted-foreground">High</div><div className="font-mono mt-0.5 text-bull">₹{inr(q.high)}</div></div>
+        <div><div className="text-muted-foreground">Low</div><div className="font-mono mt-0.5 text-bear">₹{inr(q.low)}</div></div>
+        <div><div className="text-muted-foreground">/ {q.unit}</div><div className="font-mono mt-0.5">RSI {q.rsi.toFixed(0)}</div></div>
       </div>
     </GlassCard>
   );
