@@ -41,7 +41,8 @@ function equitySubOf(sym: string): EquitySub {
 }
 
 function Signals() {
-  const [segment, setSegment] = useState<Segment>("All");
+  const [segment, setSegment] = useState<MarketSegment>("All");
+  const [equitySub, setEquitySub] = useState<EquitySub>("All");
   const [side, setSide] = useState<"All" | "BUY" | "SELL">("All");
   const [tradeType, setTradeType] = useState<"All" | "Intraday" | "Swing" | "Positional">("All");
   const [minConf, setMinConf] = useState(60);
@@ -66,7 +67,9 @@ function Signals() {
 
   const rows = useMemo(() => {
     const filtered = ALL.filter((s) => {
-      if (segment !== "All" && segmentOf(s.symbol) !== segment) return false;
+      const segOf = s.segment ?? segmentOfSymbol(s.symbol);
+      if (segment !== "All" && segOf !== segment) return false;
+      if (segment === "Equity" && equitySub !== "All" && equitySubOf(s.symbol) !== equitySub) return false;
       if (side !== "All" && s.type !== side) return false;
       if (tradeType !== "All" && s.tradeType !== tradeType) return false;
       if (s.confidence < minConf) return false;
@@ -77,7 +80,7 @@ function Signals() {
       if (sortKey === "symbol") return a.symbol.localeCompare(b.symbol);
       return (b[sortKey] as number) - (a[sortKey] as number);
     });
-  }, [segment, side, tradeType, minConf, query, sortKey]);
+  }, [segment, equitySub, side, tradeType, minConf, query, sortKey]);
 
   const buyCount = rows.filter((r) => r.type === "BUY").length;
   const sellCount = rows.filter((r) => r.type === "SELL").length;
