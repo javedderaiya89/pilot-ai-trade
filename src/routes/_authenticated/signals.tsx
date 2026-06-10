@@ -91,7 +91,7 @@ function Signals() {
     <AppShell>
       <PageHeader
         title="AI Signals Terminal"
-        subtitle="Algorithmic trade ideas across NIFTY, BANKNIFTY, FINNIFTY and equities — entries, stops, multi-target RR with confidence scoring."
+        subtitle="Algorithmic trade ideas across Equity, Commodities (Gold, Silver, Crude, Natural Gas) and Metals (Copper, Zinc, Aluminium, Lead, Nickel) — entries, stops, multi-target R:R."
         actions={<Pill tone="info"><Sparkles className="size-3" /> {ALL.length} signals live</Pill>}
       />
 
