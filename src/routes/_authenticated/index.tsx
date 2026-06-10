@@ -216,3 +216,35 @@ function MoversCard({ title, rows, tone, showVol }: { title: string; rows: typeo
     </GlassCard>
   );
 }
+
+function CommodityCard({ q, compact }: { q: CommodityQuote; compact?: boolean }) {
+  const up = q.change >= 0;
+  const Icon = q.symbol === "GOLD" ? Coins
+    : q.symbol === "SILVER" ? Gem
+    : q.symbol === "CRUDEOIL" || q.symbol === "NATURALGAS" ? Fuel
+    : Factory;
+  return (
+    <GlassCard className="relative overflow-hidden group">
+      <div className="absolute -right-10 -top-10 size-40 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity"
+           style={{ background: up ? "var(--bull)" : "var(--bear)" }} />
+      <div className="flex items-start justify-between relative">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+            <Icon className="size-3.5" /> {q.name}
+          </div>
+          <div className={"font-mono font-bold mt-1.5 " + (compact ? "text-xl" : "text-2xl md:text-3xl")}>₹{inr(q.ltp)}</div>
+          <div className={"flex items-center gap-1 mt-1 text-sm font-medium " + (up ? "text-bull" : "text-bear")}>
+            {up ? <ArrowUp className="size-4" /> : <ArrowDown className="size-4" />}
+            {up ? "+" : ""}{q.change.toFixed(2)} ({up ? "+" : ""}{q.changePct.toFixed(2)}%)
+          </div>
+        </div>
+        <Pill tone={up ? "bull" : "bear"}>{q.exchange}</Pill>
+      </div>
+      <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-border/40 text-[11px]">
+        <div><div className="text-muted-foreground">High</div><div className="font-mono mt-0.5 text-bull">₹{inr(q.high)}</div></div>
+        <div><div className="text-muted-foreground">Low</div><div className="font-mono mt-0.5 text-bear">₹{inr(q.low)}</div></div>
+        <div><div className="text-muted-foreground">/ {q.unit}</div><div className="font-mono mt-0.5">RSI {q.rsi.toFixed(0)}</div></div>
+      </div>
+    </GlassCard>
+  );
+}
