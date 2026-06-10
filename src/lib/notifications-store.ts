@@ -38,7 +38,7 @@ export const notificationsStore = {
 
 export function useNotifications() {
   const [items, setItems] = useState<Notif[]>(notificationsStore.get());
-  useEffect(() => notificationsStore.subscribe(setItems), []);
+  useEffect(() => { const unsub = notificationsStore.subscribe(setItems); return () => { unsub(); }; }, []);
   return items;
 }
 
