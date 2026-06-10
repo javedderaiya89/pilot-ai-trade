@@ -41,6 +41,22 @@ function Signals() {
   const [minConf, setMinConf] = useState(60);
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<"confidence" | "rr" | "symbol">("confidence");
+  const incrementedRef = useRef(false);
+
+  useEffect(() => {
+    if (incrementedRef.current) return;
+    incrementedRef.current = true;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: s } = await supabase.from("user_settings").select("signals_viewed").eq("user_id", user.id).maybeSingle();
+      const current = (s as any)?.signals_viewed ?? 0;
+      await supabase.from("user_settings").upsert({
+        user_id: user.id,
+        signals_viewed: current + ALL.length,
+      } as any, { onConflict: "user_id" });
+    })();
+  }, []);
 
   const rows = useMemo(() => {
     const filtered = ALL.filter((s) => {
