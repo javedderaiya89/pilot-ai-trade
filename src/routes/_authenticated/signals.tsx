@@ -3,8 +3,9 @@ import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill } from "@/components/ui-bits";
 import { aiSignals, inr, type AISignal } from "@/lib/mock-data";
 import { Sparkles, TrendingUp, TrendingDown, Search, Activity, Target, ShieldAlert, Filter } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/signals")({
   head: () => ({ meta: [{ title: "AI Signals — TradePilot AI" }] }),
@@ -40,6 +41,22 @@ function Signals() {
   const [minConf, setMinConf] = useState(60);
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<"confidence" | "rr" | "symbol">("confidence");
+  const incrementedRef = useRef(false);
+
+  useEffect(() => {
+    if (incrementedRef.current) return;
+    incrementedRef.current = true;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: s } = await supabase.from("user_settings").select("signals_viewed").eq("user_id", user.id).maybeSingle();
+      const current = (s as any)?.signals_viewed ?? 0;
+      await supabase.from("user_settings").upsert({
+        user_id: user.id,
+        signals_viewed: current + ALL.length,
+      } as any, { onConflict: "user_id" });
+    })();
+  }, []);
 
   const rows = useMemo(() => {
     const filtered = ALL.filter((s) => {

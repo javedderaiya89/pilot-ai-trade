@@ -201,6 +201,7 @@ export type Database = {
         Row: {
           created_at: string
           risk_per_trade: number
+          signals_viewed: number
           updated_at: string
           user_id: string
           virtual_capital: number
@@ -208,6 +209,7 @@ export type Database = {
         Insert: {
           created_at?: string
           risk_per_trade?: number
+          signals_viewed?: number
           updated_at?: string
           user_id: string
           virtual_capital?: number
@@ -215,6 +217,7 @@ export type Database = {
         Update: {
           created_at?: string
           risk_per_trade?: number
+          signals_viewed?: number
           updated_at?: string
           user_id?: string
           virtual_capital?: number

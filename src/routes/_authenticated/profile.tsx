@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app-shell";
 import {
   User, Mail, Save, LogOut, Shield, Wallet, Calendar, Sparkles,
-  TrendingUp, Target, Activity, BarChart3,
+  TrendingUp, Target, Activity, BarChart3, Eye, Edit3, X, CheckCircle2,
+  CreditCard, Zap,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({
@@ -27,7 +28,9 @@ function ProfilePage() {
   const [riskPerTrade, setRiskPerTrade] = useState(1);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState(false);
   const [stats, setStats] = useState({ total: 0, wins: 0, losses: 0, pnl: 0 });
+  const [signalsViewed, setSignalsViewed] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -45,6 +48,7 @@ function ProfilePage() {
       if (s) {
         setVirtualCapital(Number(s.virtual_capital));
         setRiskPerTrade(Number(s.risk_per_trade));
+        setSignalsViewed((s as any)?.signals_viewed ?? 0);
       }
       if (trades) {
         const closed = trades.filter((t: { status: string }) => t.status === "closed");
@@ -66,10 +70,21 @@ function ProfilePage() {
         user_id: profile.id,
         virtual_capital: virtualCapital,
         risk_per_trade: riskPerTrade,
-      }, { onConflict: "user_id" }),
+      } as any, { onConflict: "user_id" }),
     ]);
     setSaving(false);
-    setMsg(e1 || e2 ? (e1?.message || e2?.message || "Save failed") : "Saved successfully");
+    if (e1 || e2) {
+      setMsg(e1?.message || e2?.message || "Save failed");
+    } else {
+      setMsg("Saved successfully");
+      setEditMode(false);
+    }
+  }
+
+  function cancelEdit() {
+    setEditMode(false);
+    setMsg(null);
+    if (profile) setDisplayName(profile.display_name ?? "");
   }
 
   async function logout() {
@@ -87,38 +102,72 @@ function ProfilePage() {
       <div className="space-y-6 max-w-5xl">
         <div>
           <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Account</div>
-          <h1 className="text-3xl font-bold tracking-tight mt-1">User Profile</h1>
+          <h1 className="text-3xl font-bold tracking-tight mt-1">User Profile Center</h1>
           <p className="text-sm text-muted-foreground mt-1">Your identity, subscription and trading statistics.</p>
         </div>
 
-        {/* Identity */}
+        {/* Identity Card */}
         <div className="glass-card p-6 rounded-xl">
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="size-16 rounded-full bg-gradient-to-br from-primary to-accent grid place-items-center text-xl font-bold text-primary-foreground">
+          <div className="flex items-center gap-5 flex-wrap">
+            <div className="size-20 rounded-full bg-gradient-to-br from-primary to-accent grid place-items-center text-2xl font-bold text-primary-foreground shrink-0">
               {(displayName || profile?.email || "?").slice(0, 1).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="font-semibold text-lg truncate">{displayName || profile?.email}</div>
-              <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+              <div className="font-semibold text-xl truncate">{displayName || profile?.email}</div>
+              <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1">
                 <Mail className="size-3" /> {profile?.email}
               </div>
               <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1">
                 <Calendar className="size-3" /> Joined {joinDate}
               </div>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-primary/15 text-primary text-[11px] font-semibold uppercase tracking-widest border border-primary/30">
+                  <Sparkles className="size-3" /> Niftex Pilot Pro
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-bull/15 text-bull text-[11px] font-semibold uppercase tracking-widest border border-bull/30">
+                  <CheckCircle2 className="size-3" /> Active
+                </span>
+              </div>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-primary/15 text-primary text-[11px] font-semibold uppercase tracking-widest border border-primary/30">
-              <Sparkles className="size-3" /> Pro Trial
-            </span>
+            <div className="shrink-0">
+              {!editMode ? (
+                <button onClick={() => setEditMode(true)}
+                  className="h-10 px-4 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold flex items-center gap-2">
+                  <Edit3 className="size-4" /> Edit Profile
+                </button>
+              ) : (
+                <button onClick={cancelEdit}
+                  className="h-10 px-4 rounded-lg border border-border text-muted-foreground hover:text-foreground text-sm font-medium flex items-center gap-2">
+                  <X className="size-4" /> Cancel
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Statistics */}
+        <div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Trading Statistics</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <StatCard icon={<Eye className="size-4" />} label="Signals Viewed" value={String(signalsViewed)} />
+            <StatCard icon={<BarChart3 className="size-4" />} label="Closed Trades" value={String(stats.total)} />
+            <StatCard icon={<Target className="size-4" />} label="Win Rate" value={`${winRate}%`} tone="bull" />
+            <StatCard icon={<TrendingUp className="size-4" />} label="Net P&L" value={`₹${stats.pnl.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`} tone={stats.pnl >= 0 ? "bull" : "bear"} />
           </div>
         </div>
 
         {/* Subscription */}
         <div className="glass-card p-6 rounded-xl">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Current Subscription</div>
-              <div className="text-lg font-semibold mt-1">Niftex Pilot Pro</div>
-              <div className="text-xs text-muted-foreground mt-1">All modules unlocked • Trial ends in 5 days</div>
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-lg bg-gradient-to-br from-primary to-accent grid place-items-center">
+                <CreditCard className="size-5 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Subscription</div>
+                <div className="text-lg font-semibold mt-0.5">Niftex Pilot Pro</div>
+                <div className="text-xs text-muted-foreground mt-0.5">All modules unlocked • Monthly billing</div>
+              </div>
             </div>
             <Link to="/subscription"
               className="h-10 px-4 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold flex items-center gap-2">
@@ -127,51 +176,57 @@ function ProfilePage() {
           </div>
         </div>
 
-        {/* Trading stats */}
-        <div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Trading Statistics</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <StatCard icon={<BarChart3 className="size-4" />} label="Closed Trades" value={String(stats.total)} />
-            <StatCard icon={<Target className="size-4" />} label="Win Rate" value={`${winRate}%`} tone="bull" />
-            <StatCard icon={<TrendingUp className="size-4" />} label="Net P&L" value={`₹${stats.pnl.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`} tone={stats.pnl >= 0 ? "bull" : "bear"} />
-            <StatCard icon={<Activity className="size-4" />} label="W / L" value={`${stats.wins} / ${stats.losses}`} />
-          </div>
-        </div>
+        {/* Edit form */}
+        {editMode && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-sm font-semibold mb-4 flex items-center gap-2">
+              <Zap className="size-4 text-accent" /> Edit Profile
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <Labeled label="Display name" icon={<User className="size-3.5" />}>
+                <input value={displayName} onChange={(e) => setDisplayName(e.target.value)}
+                  className="w-full h-10 rounded-lg bg-input/40 border border-border px-3 text-sm outline-none focus:border-accent" />
+              </Labeled>
+              <Labeled label="Email" icon={<Mail className="size-3.5" />}>
+                <input value={profile?.email ?? ""} disabled
+                  className="w-full h-10 rounded-lg bg-input/20 border border-border px-3 text-sm text-muted-foreground" />
+              </Labeled>
+              <Labeled label="Virtual capital (₹)" icon={<Wallet className="size-3.5" />}>
+                <input type="number" value={virtualCapital} onChange={(e) => setVirtualCapital(Number(e.target.value))}
+                  className="w-full h-10 rounded-lg bg-input/40 border border-border px-3 text-sm font-mono outline-none focus:border-accent" />
+              </Labeled>
+              <Labeled label="Risk per trade (%)" icon={<Shield className="size-3.5" />}>
+                <input type="number" step="0.25" value={riskPerTrade} onChange={(e) => setRiskPerTrade(Number(e.target.value))}
+                  className="w-full h-10 rounded-lg bg-input/40 border border-border px-3 text-sm font-mono outline-none focus:border-accent" />
+              </Labeled>
+            </div>
 
-        {/* Account settings */}
-        <div className="glass-card p-6 rounded-xl">
-          <div className="text-sm font-semibold mb-4">Account Settings</div>
-          <div className="grid md:grid-cols-2 gap-4">
-            <Labeled label="Display name" icon={<User className="size-3.5" />}>
-              <input value={displayName} onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full h-10 rounded-lg bg-input/40 border border-border px-3 text-sm outline-none focus:border-accent" />
-            </Labeled>
-            <Labeled label="Email" icon={<Mail className="size-3.5" />}>
-              <input value={profile?.email ?? ""} disabled
-                className="w-full h-10 rounded-lg bg-input/20 border border-border px-3 text-sm text-muted-foreground" />
-            </Labeled>
-            <Labeled label="Virtual capital (₹)" icon={<Wallet className="size-3.5" />}>
-              <input type="number" value={virtualCapital} onChange={(e) => setVirtualCapital(Number(e.target.value))}
-                className="w-full h-10 rounded-lg bg-input/40 border border-border px-3 text-sm font-mono outline-none focus:border-accent" />
-            </Labeled>
-            <Labeled label="Risk per trade (%)" icon={<Shield className="size-3.5" />}>
-              <input type="number" step="0.25" value={riskPerTrade} onChange={(e) => setRiskPerTrade(Number(e.target.value))}
-                className="w-full h-10 rounded-lg bg-input/40 border border-border px-3 text-sm font-mono outline-none focus:border-accent" />
-            </Labeled>
-          </div>
+            {msg && (
+              <div className={`mt-4 text-xs flex items-center gap-1.5 ${msg.includes("success") ? "text-bull" : "text-bear"}`}>
+                {msg.includes("success") ? <CheckCircle2 className="size-3.5" /> : <X className="size-3.5" />}
+                {msg}
+              </div>
+            )}
 
-          {msg && <div className="mt-4 text-xs text-muted-foreground">{msg}</div>}
-
-          <div className="flex items-center gap-3 mt-6 flex-wrap">
-            <button onClick={save} disabled={saving}
-              className="h-10 px-4 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold flex items-center gap-2 disabled:opacity-50">
-              <Save className="size-4" /> {saving ? "Saving…" : "Save changes"}
-            </button>
-            <button onClick={logout}
-              className="h-10 px-4 rounded-lg border border-bear/40 text-bear hover:bg-bear/10 text-sm font-medium flex items-center gap-2">
-              <LogOut className="size-4" /> Sign out
-            </button>
+            <div className="flex items-center gap-3 mt-6 flex-wrap">
+              <button onClick={save} disabled={saving}
+                className="h-10 px-4 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold flex items-center gap-2 disabled:opacity-50">
+                <Save className="size-4" /> {saving ? "Saving…" : "Save changes"}
+              </button>
+              <button onClick={cancelEdit}
+                className="h-10 px-4 rounded-lg border border-border text-muted-foreground hover:text-foreground text-sm font-medium flex items-center gap-2">
+                <X className="size-4" /> Cancel
+              </button>
+            </div>
           </div>
+        )}
+
+        {/* Account actions */}
+        <div className="flex items-center gap-3">
+          <button onClick={logout}
+            className="h-10 px-4 rounded-lg border border-bear/40 text-bear hover:bg-bear/10 text-sm font-medium flex items-center gap-2">
+            <LogOut className="size-4" /> Sign out
+          </button>
         </div>
       </div>
     </AppShell>
