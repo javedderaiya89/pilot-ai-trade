@@ -312,7 +312,7 @@ function SignalPerformance() {
           <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground pr-2 border-r border-border/40">
             <Filter className="size-3" /> Filters
           </div>
-          <FilterGroup<typeof segment> value={segment} onChange={(v) => { setSegment(v); setPage(1); }} options={["All", "NIFTY", "BANKNIFTY", "FINNIFTY", "Stocks"]} />
+          <FilterGroup<typeof segment> value={segment} onChange={(v) => { setSegment(v); setPage(1); }} options={["All", "Equity", "Commodities", "Metals"]} />
           <FilterGroup<typeof side> value={side} onChange={(v) => { setSide(v); setPage(1); }} options={["All", "BUY", "SELL"]} tone="side" />
           <select value={status} onChange={(e) => { setStatus(e.target.value as typeof status); setPage(1); }} className="px-3 py-1.5 rounded-md border border-border/60 text-xs bg-transparent text-muted-foreground">
             <option value="All">All Statuses</option>
