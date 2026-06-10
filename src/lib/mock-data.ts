@@ -81,15 +81,36 @@ export interface JournalEntry {
   tag: "Win" | "Loss" | "BE";
 }
 
+export type MarketSegment = "All" | "Equity" | "Commodities" | "Metals";
+
 export interface NewsItem {
   id: string;
   title: string;
   source: string;
   time: string;
-  category: "Global" | "Indian" | "Company" | "Sector";
+  category: "Global" | "Indian" | "Company" | "Sector" | "Commodity" | "MCX" | "Metals" | "Energy";
   sentiment: "Positive" | "Neutral" | "Negative";
   summary: string;
   symbols: string[];
+  segment?: MarketSegment;
+}
+
+export interface CommodityQuote {
+  symbol: string;
+  name: string;
+  segment: "Commodities" | "Metals";
+  unit: string;
+  ltp: number;
+  change: number;
+  changePct: number;
+  high: number;
+  low: number;
+  open: number;
+  prevClose: number;
+  volume: number;
+  rsi: number;
+  macd: "bullish" | "bearish" | "neutral";
+  exchange: "MCX" | "COMEX" | "LME";
 }
 
 export const indices: IndexQuote[] = [
