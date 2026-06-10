@@ -6,6 +6,7 @@ import {
   LogOut, User as UserIcon, Activity, Bell, CreditCard, Link2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useUnreadCount } from "@/lib/notifications-store";
 
 const items = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -27,6 +28,7 @@ const items = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
+  const unread = useUnreadCount();
   const [user, setUser] = useState<{ email: string; name: string; initial: string } | null>(null);
   const [capital, setCapital] = useState<number>(100000);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -64,13 +66,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {items.map((it) => {
             const active = path === it.to;
             const Icon = it.icon;
+            const showBadge = it.to === "/notifications" && unread > 0;
             return (
               <Link key={it.to} to={it.to}
                 className={"flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all " +
                   (active
                     ? "bg-gradient-to-r from-primary/15 to-accent/10 text-foreground border border-primary/20 shadow-[0_0_20px_-8px_var(--glow)]"
                     : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/60")}>
-                <Icon className="size-4" />{it.label}
+                <Icon className="size-4" />
+                <span className="flex-1">{it.label}</span>
+                {showBadge && (
+                  <span className="min-w-5 h-5 px-1.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold grid place-items-center">
+                    {unread}
+                  </span>
+                )}
               </Link>
             );
           })}
