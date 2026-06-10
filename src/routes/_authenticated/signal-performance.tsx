@@ -57,9 +57,21 @@ function generateSignals(): SignalRecord[] {
   const today = new Date();
   // 180 signals over ~180 days
   for (let i = 0; i < 220; i++) {
-    const [symbol, segment] = SYMBOLS[Math.floor(seeded(i + 1) * SYMBOLS.length)];
+    const [symbol, segment, subSegment] = SYMBOLS[Math.floor(seeded(i + 1) * SYMBOLS.length)];
     const side: Side = seeded(i + 2) > 0.45 ? "BUY" : "SELL";
-    const basePrice = symbol === "NIFTY" ? 24800 : symbol === "BANKNIFTY" ? 53200 : symbol === "FINNIFTY" ? 24100 : 200 + seeded(i + 3) * 3500;
+    const basePrice = symbol === "NIFTY" ? 24800
+      : symbol === "BANKNIFTY" ? 53200
+      : symbol === "FINNIFTY" ? 24100
+      : symbol === "GOLD" ? 72800
+      : symbol === "SILVER" ? 89200
+      : symbol === "CRUDEOIL" ? 6480
+      : symbol === "NATURALGAS" ? 232
+      : symbol === "COPPER" ? 824
+      : symbol === "ZINC" ? 268
+      : symbol === "ALUMINIUM" ? 231
+      : symbol === "LEAD" ? 189
+      : symbol === "NICKEL" ? 1542
+      : 200 + seeded(i + 3) * 3500;
     const entry = +(basePrice * (1 + (seeded(i + 4) - 0.5) * 0.02)).toFixed(2);
     const slPct = 0.005 + seeded(i + 5) * 0.012;
     const t1Pct = slPct * (1.2 + seeded(i + 6) * 0.6);
