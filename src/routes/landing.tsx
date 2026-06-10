@@ -2,15 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   TrendingUp, Sparkles, Radar, Wallet, Activity, Newspaper,
   ShieldAlert, ArrowRight, Check, Star, Mail, ChevronDown, BarChart3,
-  Zap, Target, LineChart, Filter, Layers, Crown,
+  Zap, Target, LineChart, Filter, Layers, Crown, Trophy, TrendingDown,
 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/landing")({
   head: () => ({ meta: [
-    { title: "Niftex Pilot — AI-powered Indian market intelligence" },
+    { title: "TradePilot AI — AI-powered Indian market intelligence" },
     { name: "description", content: "AI signals, market scanner, paper trading and verified accuracy — one premium fintech terminal built for Indian markets." },
-    { property: "og:title", content: "Niftex Pilot — AI trading terminal for Indian markets" },
+    { property: "og:title", content: "TradePilot AI — AI trading terminal for Indian markets" },
     { property: "og:description", content: "Trade smarter with AI signals, market scanner, paper trading and live accuracy tracking." },
   ]}),
   component: Landing,
@@ -22,12 +22,13 @@ function Landing() {
       <Nav />
       <Hero />
       <Features />
-      <MarketScanner />
       <AISignals />
+      <MarketScanner />
       <PaperTrading />
+      <SignalPerformance />
+      <Pricing />
       <Testimonials />
       <FAQ />
-      <Pricing />
       <Contact />
       <Footer />
     </div>
@@ -42,19 +43,20 @@ function Nav() {
           <div className="size-9 rounded-lg bg-gradient-to-br from-primary to-accent grid place-items-center glow-pulse">
             <TrendingUp className="size-5 text-primary-foreground" />
           </div>
-          <div className="font-bold tracking-tight">Niftex <span className="text-primary">Pilot</span></div>
+          <div className="font-bold tracking-tight">TradePilot <span className="text-primary">AI</span></div>
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
           <a href="#features" className="hover:text-foreground">Features</a>
-          <a href="#scanner" className="hover:text-foreground">Scanner</a>
           <a href="#signals" className="hover:text-foreground">Signals</a>
+          <a href="#scanner" className="hover:text-foreground">Scanner</a>
+          <a href="#performance" className="hover:text-foreground">Performance</a>
           <a href="#pricing" className="hover:text-foreground">Pricing</a>
           <a href="#faq" className="hover:text-foreground">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/auth" className="text-sm px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground">Sign in</Link>
+          <Link to="/auth" className="text-sm px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground">Login</Link>
           <Link to="/auth" className="text-sm px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold flex items-center gap-1.5">
-            Get started <ArrowRight className="size-3.5" />
+            Start Free Trial <ArrowRight className="size-3.5" />
           </Link>
         </div>
       </div>
@@ -78,11 +80,11 @@ function Hero() {
         </p>
         <div className="mt-9 flex items-center justify-center gap-3 flex-wrap">
           <Link to="/auth" className="h-11 px-6 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold inline-flex items-center gap-2 glow-pulse">
-            Start free <ArrowRight className="size-4" />
+            Start Free Trial <ArrowRight className="size-4" />
           </Link>
-          <a href="#pricing" className="h-11 px-6 rounded-lg border border-border text-foreground font-medium inline-flex items-center gap-2 hover:bg-sidebar-accent/60">
-            View pricing
-          </a>
+          <Link to="/auth" className="h-11 px-6 rounded-lg border border-border text-foreground font-medium inline-flex items-center gap-2 hover:bg-sidebar-accent/60">
+            Login
+          </Link>
         </div>
 
         <div className="mt-16 max-w-5xl mx-auto glass-card p-2 rounded-2xl">
@@ -299,6 +301,54 @@ function PaperTrading() {
   );
 }
 
+function SignalPerformance() {
+  const months = [
+    { m: "Jan", w: 68 }, { m: "Feb", w: 71 }, { m: "Mar", w: 74 },
+    { m: "Apr", w: 69 }, { m: "May", w: 76 }, { m: "Jun", w: 72 },
+  ];
+  return (
+    <SectionShell
+      id="performance"
+      eyebrow="Signal Performance"
+      icon={<Trophy className="size-3.5" />}
+      tone="primary"
+      title="Verified accuracy — every signal, every outcome"
+      body="No marketing fluff. Every call is logged on entry and auto-closed at SL or target. Win rate, R:R and net P&L are tracked transparently."
+      bullets={["Public, immutable signal log", "Monthly accuracy breakdown", "Filter by segment & confidence"]}
+      reverse
+      preview={
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2">
+            {[["Win rate","72%","bull"],["Avg R:R","1:2.3","primary"],["Closed","1,284","accent"]].map(([k,v,tone]) => (
+              <div key={k as string} className="rounded-md bg-background/70 border border-border/40 p-3">
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{k}</div>
+                <div className={"font-mono font-bold mt-1 text-sm " + (tone === "bull" ? "text-bull" : tone === "primary" ? "text-primary" : "text-accent")}>{v}</div>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-lg bg-background/70 border border-border/40 p-4">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+              <BarChart3 className="size-3" /> Monthly win rate
+            </div>
+            <div className="mt-3 flex items-end gap-2 h-24">
+              {months.map((mo) => (
+                <div key={mo.m} className="flex-1 flex flex-col items-center gap-1">
+                  <div className="w-full rounded-t bg-gradient-to-t from-primary to-accent" style={{ height: `${mo.w}%` }} />
+                  <div className="text-[10px] text-muted-foreground">{mo.m}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="flex items-center gap-1.5 text-bull"><TrendingUp className="size-3.5" /> Best: NIFTY +3.8%</span>
+            <span className="flex items-center gap-1.5 text-bear"><TrendingDown className="size-3.5" /> Worst: -1.2%</span>
+          </div>
+        </div>
+      }
+    />
+  );
+}
+
 function Testimonials() {
   const items = [
     { n: "Arjun S.", r: "Swing Trader, Mumbai", q: "The accuracy tracker convinced me. I follow the high-confidence setups and my win rate has jumped." },
@@ -333,7 +383,7 @@ function Testimonials() {
 
 function FAQ() {
   const faqs = [
-    { q: "Is this real trading or paper trading?", a: "Niftex Pilot is a research, signals and paper trading platform. Real broker execution is on the roadmap via broker connections." },
+    { q: "Is this real trading or paper trading?", a: "TradePilot AI is a research, signals and paper trading platform. Real broker execution is on the roadmap via broker connections." },
     { q: "Which markets are supported?", a: "NSE & BSE — NIFTY, BANKNIFTY, FINNIFTY, SENSEX indices, F&O and 500+ stocks. Gold & silver desks included." },
     { q: "How accurate are the AI signals?", a: "Every signal is logged with outcome. Track verified accuracy in the Signal Performance Center — no cherry-picking." },
     { q: "Do you offer a free trial?", a: "Yes, you can sign up and explore all modules. The Pro plan unlocks unlimited signals and full history." },
@@ -380,7 +430,7 @@ function Pricing() {
         <div className="text-center max-w-2xl mx-auto">
           <div className="text-[11px] uppercase tracking-[0.2em] text-primary">Pricing</div>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-2">One plan. Every module unlocked.</h2>
-          <p className="text-muted-foreground mt-3">No tiers, no upsells. Get the full Niftex Pilot terminal.</p>
+          <p className="text-muted-foreground mt-3">No tiers, no upsells. Get the full TradePilot AI terminal.</p>
         </div>
         <div className="mt-12 grid md:grid-cols-5 gap-6 items-stretch">
           <div className="md:col-span-3 glass-card p-8 rounded-2xl relative overflow-hidden">
@@ -388,7 +438,7 @@ function Pricing() {
             <div className="relative">
               <div className="flex items-center gap-2">
                 <Crown className="size-4 text-primary" />
-                <div className="text-[11px] uppercase tracking-[0.2em] text-primary">Niftex Pilot Pro</div>
+                <div className="text-[11px] uppercase tracking-[0.2em] text-primary">TradePilot AI Pro</div>
               </div>
               <div className="mt-4 flex items-baseline gap-2">
                 <span className="font-mono text-5xl font-bold">₹1,499</span>
@@ -406,7 +456,7 @@ function Pricing() {
                 ))}
               </ul>
               <Link to="/auth" className="mt-8 h-11 px-6 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold inline-flex items-center gap-2">
-                Start free trial <ArrowRight className="size-4" />
+                Start Free Trial <ArrowRight className="size-4" />
               </Link>
             </div>
           </div>
@@ -442,8 +492,8 @@ function Contact() {
             <div className="text-[11px] uppercase tracking-[0.2em] text-primary">Get in touch</div>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-2">Talk to the team</h2>
             <p className="text-muted-foreground mt-3 max-w-xl mx-auto">Questions about features, pricing or enterprise access? We respond within one business day.</p>
-            <a href="mailto:hello@niftexpilot.app" className="mt-6 inline-flex items-center gap-2 h-11 px-6 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold">
-              <Mail className="size-4" /> hello@niftexpilot.app
+            <a href="mailto:hello@tradepilotai.app" className="mt-6 inline-flex items-center gap-2 h-11 px-6 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold">
+              <Mail className="size-4" /> hello@tradepilotai.app
             </a>
           </div>
         </div>
@@ -460,13 +510,13 @@ function Footer() {
           <div className="size-7 rounded-md bg-gradient-to-br from-primary to-accent grid place-items-center">
             <TrendingUp className="size-3.5 text-primary-foreground" />
           </div>
-          <span>© {new Date().getFullYear()} Niftex Pilot. For educational use — not investment advice.</span>
+          <span>© {new Date().getFullYear()} TradePilot AI. For educational use — not investment advice.</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="#pricing" className="hover:text-foreground">Pricing</a>
           <a href="#faq" className="hover:text-foreground">FAQ</a>
           <a href="#contact" className="hover:text-foreground">Contact</a>
-          <Link to="/auth" className="hover:text-foreground">Sign in</Link>
+          <Link to="/auth" className="hover:text-foreground">Login</Link>
         </div>
       </div>
     </footer>
