@@ -206,7 +206,7 @@ function Signals() {
                   <tr key={s.id} className={cn("border-b border-border/20 hover:bg-surface/40 transition-colors", i % 2 === 0 ? "bg-transparent" : "bg-surface/20")}>
                     <td className="px-4 py-3">
                       <div className="font-semibold">{s.symbol}</div>
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{segmentOf(s.symbol)} • {s.timeframe}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.segment ?? segmentOfSymbol(s.symbol)} • {s.timeframe}</div>
                     </td>
                     <td className="px-3 py-3">
                       <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold border",
