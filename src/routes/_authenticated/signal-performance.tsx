@@ -97,7 +97,7 @@ function generateSignals(): SignalRecord[] {
     out.push({
       id: `SIG-${(1000 + i).toString()}`,
       date: d.toISOString().slice(0, 10),
-      symbol, segment, side, entry, stopLoss, target1, target2, target3, status,
+      symbol, segment, subSegment, side, entry, stopLoss, target1, target2, target3, status,
     });
   }
   return out;
