@@ -50,17 +50,48 @@ const scans: Record<string, { label: string; categories: { id: ScanCategory; lab
   },
 };
 
+type Row = Stock | CommodityQuote;
+function isCommodity(r: Row): r is CommodityQuote { return "exchange" in r; }
+
 function Scanner() {
+  const [segment, setSegment] = useState<MarketSegment>("All");
   const [scan, setScan] = useState("RSI");
   const [cat, setCat] = useState(scans["RSI"].categories[0].id);
   const [q, setQ] = useState("");
   const current = scans[scan];
   const fn = current.categories.find((c) => c.id === cat)?.fn ?? (() => true);
-  const filtered = stocks.filter(fn).filter((s) => s.symbol.toLowerCase().includes(q.toLowerCase()) || s.name.toLowerCase().includes(q.toLowerCase()));
+
+  const universe: Row[] = useMemo(() => {
+    const eq = stocks as Row[];
+    const co = commodities as Row[];
+    const me = metals as Row[];
+    if (segment === "Equity") return eq;
+    if (segment === "Commodities") return co;
+    if (segment === "Metals") return me;
+    return [...eq, ...co, ...me];
+  }, [segment]);
+
+  // Adapt scan predicates to commodity/metal rows (same RSI/MACD/volume fields)
+  const filtered = useMemo(() => {
+    return universe.filter((r) => {
+      // Reuse the Stock-shaped fn — both Stock and CommodityQuote expose ltp, changePct, rsi, macd, volume
+      return fn(r as unknown as Stock);
+    }).filter((r) => r.symbol.toLowerCase().includes(q.toLowerCase()) || r.name.toLowerCase().includes(q.toLowerCase()));
+  }, [universe, fn, q]);
+
+  const segmentLabel = segment === "All" ? "Equity + Commodity + Metal" : segment;
 
   return (
     <AppShell>
-      <PageHeader title="Market Scanner" subtitle="Multi-factor scans on the Indian equity universe — RSI, MACD, EMA, Volume, Breakout, Momentum." />
+      <PageHeader
+        title="Market Scanner"
+        subtitle="Multi-factor scans across Equity, Commodity (Gold, Silver, Crude, Natural Gas) and Metal (Copper, Zinc, Aluminium, Lead, Nickel) universes."
+      />
+
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <SegmentTabs value={segment} onChange={setSegment} />
+        <Pill tone="info">{segmentLabel} Scanner</Pill>
+      </div>
 
       <GlassCard className="mb-4">
         <div className="flex flex-wrap gap-2 mb-3">
@@ -92,7 +123,7 @@ function Scanner() {
             <thead className="text-[11px] uppercase tracking-wider text-muted-foreground border-b border-border/50 bg-surface/40">
               <tr>
                 <th className="text-left px-4 py-3">Symbol</th>
-                <th className="text-left px-4 py-3">Sector</th>
+                <th className="text-left px-4 py-3">Class</th>
                 <th className="text-right px-4 py-3">LTP</th>
                 <th className="text-right px-4 py-3">Change %</th>
                 <th className="text-right px-4 py-3">RSI</th>
@@ -105,12 +136,12 @@ function Scanner() {
               {filtered.map((s) => (
                 <tr key={s.symbol} className="border-b border-border/30 hover:bg-surface/40">
                   <td className="px-4 py-3"><div className="font-semibold">{s.symbol}</div><div className="text-[11px] text-muted-foreground">{s.name}</div></td>
-                  <td className="px-4 py-3 text-muted-foreground">{s.sector}</td>
-                  <td className="px-4 py-3 text-right font-mono">{inr(s.ltp)}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{isCommodity(s) ? `${s.segment} · ${s.exchange}` : (s as Stock).sector}</td>
+                  <td className="px-4 py-3 text-right font-mono">{isCommodity(s) ? "₹" : ""}{inr(s.ltp)}</td>
                   <td className={"px-4 py-3 text-right font-mono " + (s.changePct >= 0 ? "text-bull" : "text-bear")}>{s.changePct >= 0 ? "+" : ""}{s.changePct.toFixed(2)}%</td>
                   <td className="px-4 py-3 text-right font-mono">{s.rsi}</td>
                   <td className="px-4 py-3 text-center"><Pill tone={s.macd === "bullish" ? "bull" : s.macd === "bearish" ? "bear" : "neutral"}>{s.macd}</Pill></td>
-                  <td className="px-4 py-3 text-right font-mono text-muted-foreground">{(s.volume/1e6).toFixed(2)}M</td>
+                  <td className="px-4 py-3 text-right font-mono text-muted-foreground">{s.volume >= 1e6 ? (s.volume/1e6).toFixed(2)+"M" : s.volume.toLocaleString()}</td>
                   <td className="px-4 py-3 text-center"><button className="text-xs px-2 py-1 rounded bg-primary/15 text-primary border border-primary/30 hover:bg-primary/25">Trade</button></td>
                 </tr>
               ))}
