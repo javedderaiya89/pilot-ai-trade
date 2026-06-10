@@ -102,16 +102,53 @@ function Portfolio() {
         </div>
       </GlassCard>
 
-      <GlassCard className="p-0 overflow-hidden">
+      <GlassCard className="p-0 overflow-hidden mb-4">
         <div className="px-5 py-3 border-b border-border/40 flex items-center justify-between">
-          <h3 className="font-semibold">Closed Positions</h3>
-          <Pill tone="info">{closedPositions.length} trades</Pill>
+          <h3 className="font-semibold">Open Positions</h3>
+          <Pill tone="info">{openFiltered.length} trades</Pill>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-[11px] uppercase tracking-wider text-muted-foreground bg-surface/40 border-b border-border/40">
               <tr>
                 <th className="text-left px-4 py-3">Symbol</th>
+                <th className="text-left px-4 py-3">Segment</th>
+                <th className="text-right px-4 py-3">Qty</th>
+                <th className="text-right px-4 py-3">Avg</th>
+                <th className="text-right px-4 py-3">LTP</th>
+                <th className="text-right px-4 py-3">P&L</th>
+                <th className="text-right px-4 py-3">P&L %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {openFiltered.map((p) => (
+                <tr key={p.id} className="border-b border-border/30 hover:bg-surface/40">
+                  <td className="px-4 py-3 font-semibold">{p.symbol}</td>
+                  <td className="px-4 py-3"><Pill tone={p.segment === "Equity" ? "info" : p.segment === "Commodities" ? "warn" : "neutral"}>{p.segment}</Pill></td>
+                  <td className="px-4 py-3 text-right font-mono">{p.qty}</td>
+                  <td className="px-4 py-3 text-right font-mono">{inr(p.avgPrice)}</td>
+                  <td className="px-4 py-3 text-right font-mono">{inr(p.ltp)}</td>
+                  <td className={"px-4 py-3 text-right font-mono font-semibold " + (p.pnl >= 0 ? "text-bull" : "text-bear")}>{p.pnl >= 0 ? "+" : ""}₹{inr(p.pnl)}</td>
+                  <td className={"px-4 py-3 text-right font-mono " + (p.pnl >= 0 ? "text-bull" : "text-bear")}>{p.pnlPct >= 0 ? "+" : ""}{p.pnlPct.toFixed(2)}%</td>
+                </tr>
+              ))}
+              {openFiltered.length === 0 && <tr><td colSpan={7} className="text-center py-8 text-muted-foreground">No positions in this segment.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </GlassCard>
+
+      <GlassCard className="p-0 overflow-hidden">
+        <div className="px-5 py-3 border-b border-border/40 flex items-center justify-between">
+          <h3 className="font-semibold">Closed Positions</h3>
+          <Pill tone="info">{closedFiltered.length} trades</Pill>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="text-[11px] uppercase tracking-wider text-muted-foreground bg-surface/40 border-b border-border/40">
+              <tr>
+                <th className="text-left px-4 py-3">Symbol</th>
+                <th className="text-left px-4 py-3">Segment</th>
                 <th className="text-right px-4 py-3">Qty</th>
                 <th className="text-right px-4 py-3">Buy Avg</th>
                 <th className="text-right px-4 py-3">Sell Avg</th>
@@ -121,9 +158,10 @@ function Portfolio() {
               </tr>
             </thead>
             <tbody>
-              {closedPositions.map((p) => (
+              {closedFiltered.map((p) => (
                 <tr key={p.id} className="border-b border-border/30 hover:bg-surface/40">
                   <td className="px-4 py-3 font-semibold">{p.symbol}</td>
+                  <td className="px-4 py-3"><Pill tone={p.segment === "Equity" ? "info" : p.segment === "Commodities" ? "warn" : "neutral"}>{p.segment}</Pill></td>
                   <td className="px-4 py-3 text-right font-mono">{p.qty}</td>
                   <td className="px-4 py-3 text-right font-mono">{inr(p.avgPrice)}</td>
                   <td className="px-4 py-3 text-right font-mono">{inr(p.ltp)}</td>
@@ -132,6 +170,7 @@ function Portfolio() {
                   <td className="px-4 py-3 text-muted-foreground text-xs">{p.openedAt}</td>
                 </tr>
               ))}
+              {closedFiltered.length === 0 && <tr><td colSpan={8} className="text-center py-8 text-muted-foreground">No closed trades in this segment.</td></tr>}
             </tbody>
           </table>
         </div>
