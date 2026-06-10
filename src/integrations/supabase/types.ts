@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      broker_activity: {
+        Row: {
+          action: string
+          broker: string
+          created_at: string
+          details: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          broker: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          broker?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      broker_connections: {
+        Row: {
+          broker: string
+          connected_at: string | null
+          created_at: string
+          disconnected_at: string | null
+          id: string
+          last_sync_at: string | null
+          mode: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          broker: string
+          connected_at?: string | null
+          created_at?: string
+          disconnected_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          mode?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          broker?: string
+          connected_at?: string | null
+          created_at?: string
+          disconnected_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          mode?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           created_at: string
