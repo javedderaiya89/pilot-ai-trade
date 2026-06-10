@@ -103,69 +103,78 @@ function Dashboard() {
         </>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <GlassCard className="lg:col-span-2">
-          <SectionTitle title="NIFTY 50 — Intraday" subtitle="1-minute chart (sample data)" right={<Pill tone="bull">+0.58%</Pill>} />
-          <div className="h-64">
-            <ResponsiveContainer>
-              <AreaChart data={equityCurve}>
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--bull)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="var(--bull)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-                <XAxis dataKey="day" stroke="var(--muted-foreground)" fontSize={11} />
-                <YAxis stroke="var(--muted-foreground)" fontSize={11} domain={["dataMin - 500", "dataMax + 500"]} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
-                <Area type="monotone" dataKey="equity" stroke="var(--bull)" strokeWidth={2} fill="url(#g1)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </GlassCard>
-
-        <GlassCard>
-          <SectionTitle title="Market Sentiment" />
-          <div className="flex flex-col items-center">
-            <div className="relative size-44">
-              <svg viewBox="0 0 200 120" className="w-full">
-                <defs>
-                  <linearGradient id="gauge" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="var(--bear)" />
-                    <stop offset="50%" stopColor="var(--warning)" />
-                    <stop offset="100%" stopColor="var(--bull)" />
-                  </linearGradient>
-                </defs>
-                <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="16" strokeLinecap="round" />
-                <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="url(#gauge)" strokeWidth="16" strokeLinecap="round"
-                  strokeDasharray={`${sentiment.score * 2.51} 999`} />
-                <text x="100" y="95" textAnchor="middle" className="fill-foreground font-mono" fontSize="28" fontWeight="700">{sentiment.score}</text>
-              </svg>
+      {showEquity && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <GlassCard className="lg:col-span-2">
+            <SectionTitle title="NIFTY 50 — Intraday" subtitle="1-minute chart (sample data)" right={<Pill tone="bull">+0.58%</Pill>} />
+            <div className="h-64">
+              <ResponsiveContainer>
+                <AreaChart data={equityCurve}>
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--bull)" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="var(--bull)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
+                  <XAxis dataKey="day" stroke="var(--muted-foreground)" fontSize={11} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={11} domain={["dataMin - 500", "dataMax + 500"]} />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
+                  <Area type="monotone" dataKey="equity" stroke="var(--bull)" strokeWidth={2} fill="url(#g1)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-            <Pill tone={sentTone as "bull" | "bear" | "neutral"} className="text-xs"><Flame className="size-3" /> {sentLabel}</Pill>
-            <div className="grid grid-cols-3 gap-3 w-full mt-4 text-center text-xs">
-              <div><div className="text-bull font-mono font-semibold">{sentiment.advances}</div><div className="text-muted-foreground">Advances</div></div>
-              <div><div className="text-bear font-mono font-semibold">{sentiment.declines}</div><div className="text-muted-foreground">Declines</div></div>
-              <div><div className="font-mono font-semibold">{sentiment.unchanged}</div><div className="text-muted-foreground">Unchanged</div></div>
-            </div>
-          </div>
-        </GlassCard>
-      </div>
+          </GlassCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <MoversCard title="Top Gainers" tone="bull" rows={topGainers} />
-        <MoversCard title="Top Losers" tone="bear" rows={topLosers} />
-        <MoversCard title="Most Active" tone="neutral" rows={mostActive} showVol />
-      </div>
+          <GlassCard>
+            <SectionTitle title="Market Sentiment" />
+            <div className="flex flex-col items-center">
+              <div className="relative size-44">
+                <svg viewBox="0 0 200 120" className="w-full">
+                  <defs>
+                    <linearGradient id="gauge" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="var(--bear)" />
+                      <stop offset="50%" stopColor="var(--warning)" />
+                      <stop offset="100%" stopColor="var(--bull)" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="16" strokeLinecap="round" />
+                  <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="url(#gauge)" strokeWidth="16" strokeLinecap="round"
+                    strokeDasharray={`${sentiment.score * 2.51} 999`} />
+                  <text x="100" y="95" textAnchor="middle" className="fill-foreground font-mono" fontSize="28" fontWeight="700">{sentiment.score}</text>
+                </svg>
+              </div>
+              <Pill tone={sentTone as "bull" | "bear" | "neutral"} className="text-xs"><Flame className="size-3" /> {sentLabel}</Pill>
+              <div className="grid grid-cols-3 gap-3 w-full mt-4 text-center text-xs">
+                <div><div className="text-bull font-mono font-semibold">{sentiment.advances}</div><div className="text-muted-foreground">Advances</div></div>
+                <div><div className="text-bear font-mono font-semibold">{sentiment.declines}</div><div className="text-muted-foreground">Declines</div></div>
+                <div><div className="font-mono font-semibold">{sentiment.unchanged}</div><div className="text-muted-foreground">Unchanged</div></div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      {showEquity && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <MoversCard title="Top Gainers" tone="bull" rows={topGainers} />
+          <MoversCard title="Top Losers" tone="bear" rows={topLosers} />
+          <MoversCard title="Most Active" tone="neutral" rows={mostActive} showVol />
+        </div>
+      )}
 
       <GlassCard>
-        <SectionTitle title="News Intelligence" subtitle="Curated headlines with AI sentiment tagging" right={<Pill tone="info"><Newspaper className="size-3" /> {news.length} items</Pill>} />
+        <SectionTitle
+          title={segment === "All" ? "News Intelligence" : `${segment} News`}
+          subtitle="Curated headlines with AI sentiment tagging"
+          right={<Pill tone="info"><Newspaper className="size-3" /> {(showEquity ? news.length : 0) + commodityNewsFiltered.length} items</Pill>}
+        />
         <div className="grid md:grid-cols-2 gap-3">
-          {news.slice(0, 4).map((n) => (
+          {[...(showEquity ? news.slice(0, 2) : []), ...commodityNewsFiltered.slice(0, 4)].map((n) => (
             <div key={n.id} className="rounded-lg border border-border/50 bg-surface/40 p-3">
-              <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+              <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground flex-wrap">
                 <Pill tone={n.sentiment === "Positive" ? "bull" : n.sentiment === "Negative" ? "bear" : "neutral"}>{n.sentiment}</Pill>
+                <Pill tone="info">{n.category}</Pill>
                 <span>{n.source}</span><span>•</span><span>{n.time}</span>
               </div>
               <div className="font-medium mt-2 text-sm leading-snug">{n.title}</div>
