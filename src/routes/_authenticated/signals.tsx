@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill } from "@/components/ui-bits";
-import { aiSignals, inr, type AISignal } from "@/lib/mock-data";
+import { SegmentTabs, type MarketSegment } from "@/components/segment-tabs";
+import { aiSignals, commoditySignals, metalSignals, inr, segmentOfSymbol, type AISignal } from "@/lib/mock-data";
 import { Sparkles, TrendingUp, TrendingDown, Search, Activity, Target, ShieldAlert, Filter } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -12,8 +13,8 @@ export const Route = createFileRoute("/_authenticated/signals")({
   component: Signals,
 });
 
-type Segment = "All" | "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks";
-const SEGMENTS: Segment[] = ["All", "NIFTY", "BANKNIFTY", "FINNIFTY", "Stocks"];
+type EquitySub = "All" | "NIFTY" | "BANKNIFTY" | "FINNIFTY" | "Stocks";
+const EQUITY_SUBS: EquitySub[] = ["All", "NIFTY", "BANKNIFTY", "FINNIFTY", "Stocks"];
 
 // Extra realistic paper-trading signals to make the terminal feel populated
 const extraSignals: AISignal[] = [
@@ -25,9 +26,14 @@ const extraSignals: AISignal[] = [
   { id: "s14", symbol: "LT", type: "BUY", entry: 3612, stopLoss: 3568, target1: 3660, target2: 3712, target3: 3780, confidence: 81, rr: 2.6, tradeType: "Positional", timeframe: "1W", reason: "Order book momentum; multi-week consolidation breakout" },
 ];
 
-const ALL: AISignal[] = [...aiSignals, ...extraSignals];
+const ALL: AISignal[] = [
+  ...aiSignals.map((s) => ({ ...s, segment: "Equity" as MarketSegment })),
+  ...extraSignals.map((s) => ({ ...s, segment: "Equity" as MarketSegment })),
+  ...commoditySignals,
+  ...metalSignals,
+];
 
-function segmentOf(sym: string): Segment {
+function equitySubOf(sym: string): EquitySub {
   if (sym.startsWith("NIFTY")) return "NIFTY";
   if (sym.startsWith("BANKNIFTY")) return "BANKNIFTY";
   if (sym.startsWith("FINNIFTY")) return "FINNIFTY";
