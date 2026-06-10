@@ -301,6 +301,54 @@ function PaperTrading() {
   );
 }
 
+function SignalPerformance() {
+  const months = [
+    { m: "Jan", w: 68 }, { m: "Feb", w: 71 }, { m: "Mar", w: 74 },
+    { m: "Apr", w: 69 }, { m: "May", w: 76 }, { m: "Jun", w: 72 },
+  ];
+  return (
+    <SectionShell
+      id="performance"
+      eyebrow="Signal Performance"
+      icon={<Trophy className="size-3.5" />}
+      tone="primary"
+      title="Verified accuracy — every signal, every outcome"
+      body="No marketing fluff. Every call is logged on entry and auto-closed at SL or target. Win rate, R:R and net P&L are tracked transparently."
+      bullets={["Public, immutable signal log", "Monthly accuracy breakdown", "Filter by segment & confidence"]}
+      reverse
+      preview={
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2">
+            {[["Win rate","72%","bull"],["Avg R:R","1:2.3","primary"],["Closed","1,284","accent"]].map(([k,v,tone]) => (
+              <div key={k as string} className="rounded-md bg-background/70 border border-border/40 p-3">
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{k}</div>
+                <div className={"font-mono font-bold mt-1 text-sm " + (tone === "bull" ? "text-bull" : tone === "primary" ? "text-primary" : "text-accent")}>{v}</div>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-lg bg-background/70 border border-border/40 p-4">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+              <BarChart3 className="size-3" /> Monthly win rate
+            </div>
+            <div className="mt-3 flex items-end gap-2 h-24">
+              {months.map((mo) => (
+                <div key={mo.m} className="flex-1 flex flex-col items-center gap-1">
+                  <div className="w-full rounded-t bg-gradient-to-t from-primary to-accent" style={{ height: `${mo.w}%` }} />
+                  <div className="text-[10px] text-muted-foreground">{mo.m}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="flex items-center gap-1.5 text-bull"><TrendingUp className="size-3.5" /> Best: NIFTY +3.8%</span>
+            <span className="flex items-center gap-1.5 text-bear"><TrendingDown className="size-3.5" /> Worst: -1.2%</span>
+          </div>
+        </div>
+      }
+    />
+  );
+}
+
 function Testimonials() {
   const items = [
     { n: "Arjun S.", r: "Swing Trader, Mumbai", q: "The accuracy tracker convinced me. I follow the high-confidence setups and my win rate has jumped." },
