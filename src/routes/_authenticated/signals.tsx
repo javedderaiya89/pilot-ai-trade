@@ -122,21 +122,28 @@ function Signals() {
             <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground pr-2 border-r border-border/40">
               <Filter className="size-3" /> Segment
             </div>
-            {SEGMENTS.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSegment(s)}
-                className={cn(
-                  "px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors",
-                  segment === s
-                    ? "bg-primary/15 border-primary/40 text-primary"
-                    : "border-border/60 text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {s}
-              </button>
-            ))}
+            <SegmentTabs value={segment} onChange={(v) => { setSegment(v); if (v !== "Equity") setEquitySub("All"); }} />
           </div>
+
+          {segment === "Equity" && (
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground pr-2">Equity Index</div>
+              {EQUITY_SUBS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setEquitySub(s)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors",
+                    equitySub === s
+                      ? "bg-accent/15 border-accent/40 text-accent"
+                      : "border-border/60 text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex rounded-md overflow-hidden border border-border/60">
