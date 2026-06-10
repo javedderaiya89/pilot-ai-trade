@@ -1,14 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
-import { indices, topGainers, topLosers, mostActive, sentiment, equityCurve, inr, news } from "@/lib/mock-data";
+import { SegmentTabs, type MarketSegment } from "@/components/segment-tabs";
+import { indices, topGainers, topLosers, mostActive, sentiment, equityCurve, inr, news, commodities, metals, commodityNews, type CommodityQuote } from "@/lib/mock-data";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
-import { ArrowDown, ArrowUp, Flame, Activity, Newspaper } from "lucide-react";
+import { ArrowDown, ArrowUp, Flame, Activity, Newspaper, Fuel, Coins, Gem, Factory } from "lucide-react";
+import { useState, useMemo } from "react";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({ meta: [
     { title: "Dashboard — TradePilot AI" },
-    { name: "description", content: "Live NIFTY, BANKNIFTY, FINNIFTY, SENSEX dashboard with market breadth, sentiment, top movers and AI insights." },
+    { name: "description", content: "Live NIFTY, BANKNIFTY, FINNIFTY, SENSEX, Gold, Silver, Crude, Copper dashboard with breadth, sentiment and AI insights." },
   ]}),
   component: Dashboard,
 });
