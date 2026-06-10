@@ -1,21 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, PageHeader, Pill, SectionTitle } from "@/components/ui-bits";
-import { positions, closedPositions, equityCurve, monthlyPerf, inr } from "@/lib/mock-data";
+import { SegmentTabs, type MarketSegment } from "@/components/segment-tabs";
+import { positions, closedPositions, equityCurve, monthlyPerf, inr, segmentOfSymbol } from "@/lib/mock-data";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell, Area, AreaChart } from "recharts";
+import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/portfolio")({
   head: () => ({ meta: [{ title: "Portfolio — TradePilot AI" }] }),
   component: Portfolio,
 });
 
+// Commodity/metal paper positions to round out the book
+const commodityPositions = [
+  { id: "pc1", symbol: "GOLD", type: "LONG" as const, instrument: "FUT" as const, qty: 1, avgPrice: 72400, ltp: 72845, pnl: 4450, pnlPct: 0.61, openedAt: "2025-06-04 10:15", segment: "Commodities" as MarketSegment },
+  { id: "pc2", symbol: "CRUDEOIL", type: "LONG" as const, instrument: "FUT" as const, qty: 100, avgPrice: 6432, ltp: 6485, pnl: 5300, pnlPct: 0.82, openedAt: "2025-06-05 11:02", segment: "Commodities" as MarketSegment },
+  { id: "pm1", symbol: "COPPER", type: "LONG" as const, instrument: "FUT" as const, qty: 2500, avgPrice: 818, ltp: 824.5, pnl: 16250, pnlPct: 0.79, openedAt: "2025-06-03 09:45", segment: "Metals" as MarketSegment },
+  { id: "pm2", symbol: "NICKEL", type: "SHORT" as const, instrument: "FUT" as const, qty: 250, avgPrice: 1568, ltp: 1542.8, pnl: 6300, pnlPct: 1.61, openedAt: "2025-06-06 12:30", segment: "Metals" as MarketSegment },
+];
+
 function Portfolio() {
-  const totalOpen = positions.reduce((a, p) => a + p.pnl, 0);
-  const totalClosed = closedPositions.reduce((a, p) => a + p.pnl, 0);
+  const [segment, setSegment] = useState<MarketSegment>("All");
+  const allOpen = [...positions.map((p) => ({ ...p, segment: segmentOfSymbol(p.symbol.split(" ")[0]) as MarketSegment })), ...commodityPositions];
+  const allClosed = closedPositions.map((p) => ({ ...p, segment: segmentOfSymbol(p.symbol) as MarketSegment }));
+  const openFiltered = useMemo(() => segment === "All" ? allOpen : allOpen.filter((p) => p.segment === segment), [segment, allOpen]);
+  const closedFiltered = useMemo(() => segment === "All" ? allClosed : allClosed.filter((p) => p.segment === segment), [segment, allClosed]);
+  const totalOpen = openFiltered.reduce((a, p) => a + p.pnl, 0);
+  const totalClosed = closedFiltered.reduce((a, p) => a + p.pnl, 0);
   const drawdown = -3120;
   return (
     <AppShell>
-      <PageHeader title="Portfolio Analytics" subtitle="Equity curve, drawdown, monthly performance and full position book." />
+      <PageHeader title="Portfolio Analytics" subtitle="Equity, commodity and metal positions — curve, drawdown and monthly performance." />
+
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <SegmentTabs value={segment} onChange={setSegment} />
+        <Pill tone="info">{openFiltered.length} open · {closedFiltered.length} closed</Pill>
+      </div>
+
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         {[
