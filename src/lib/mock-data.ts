@@ -38,6 +38,7 @@ export interface AISignal {
   tradeType: "Intraday" | "Swing" | "Positional";
   timeframe: string;
   reason: string;
+  segment?: MarketSegment;
 }
 
 export interface OptionRow {
