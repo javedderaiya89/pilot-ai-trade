@@ -85,8 +85,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "TradePilot AI — Indian Stock & Options Paper Trading" },
       { name: "twitter:description", content: "Premium AI-powered paper trading platform for NIFTY, BANKNIFTY and Indian stocks. Scanners, options analysis, AI signals, journal and analytics." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/63291d51-0b0c-42a9-83bb-9a7714c12a1d/id-preview-6f0df219--db8a6087-05d5-4ab0-a735-36947beecbcb.lovable.app-1780746835853.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/63291d51-0b0c-42a9-83bb-9a7714c12a1d/id-preview-6f0df219--db8a6087-05d5-4ab0-a735-36947beecbcb.lovable.app-1780746835853.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/df1904d9-0e77-4ab4-8992-0efd45549413" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/df1904d9-0e77-4ab4-8992-0efd45549413" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
