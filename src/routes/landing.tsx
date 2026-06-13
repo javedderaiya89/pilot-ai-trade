@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/landing")({
+export const Route = createFileRoute("/")({
   head: () => ({ meta: [
     { title: "TradePilot AI — AI-powered Indian market intelligence" },
     { name: "description", content: "AI signals, market scanner, paper trading and verified accuracy — one premium fintech terminal built for Indian markets." },
